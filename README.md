@@ -1,4 +1,4 @@
-# IceBreaker — AI Networking Platform
+# IceBreaker - AI Networking Platform
 
 An AI-powered networking matchmaking platform that connects attendees at professional events and generates personalized conversation starters using semantic vector search and large language models.
 
