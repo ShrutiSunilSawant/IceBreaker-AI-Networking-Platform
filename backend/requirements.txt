@@ -1,0 +1,37 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+pydantic-settings
+
+# Database
+sqlalchemy
+asyncpg
+alembic
+
+# Auth
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Vector DB
+qdrant-client
+
+# Embeddings (local, free)
+sentence-transformers
+
+# LLM (Groq, free tier)
+groq
+
+# Agent orchestration
+langgraph
+langchain-core
+
+# Redis
+redis
+
+# Rate limiting
+slowapi
+
+# Utils
+httpx
+python-multipart
