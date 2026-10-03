@@ -2,8 +2,6 @@
 
 An AI-powered networking matchmaking platform that connects attendees at professional events and generates personalized conversation starters using semantic vector search and large language models.
 
-> Built entirely on free and open-source tools. Zero API cost.
-
 ---
 
 ## Features
