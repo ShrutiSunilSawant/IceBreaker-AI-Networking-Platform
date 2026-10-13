@@ -27,8 +27,8 @@ export default function CreateEvent() {
 
   const handleSubmit = async () => {
     setError(null)
-    if (!form.name || !form.eventDate || !form.eventTime || !form.organizer_email) {
-      setError('Event name, date, time, and your email are required.')
+    if (!form.name || !form.eventDate || !form.eventTime || !form.organizer_email || !form.location || !form.description) {
+      setError('All fields are required.')
       return
     }
     const combinedDate = `${form.eventDate}T${form.eventTime}`
@@ -209,12 +209,13 @@ export default function CreateEvent() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
           <div className="field">
-            <label>Location</label>
+            <label>Location *</label>
             <input
               type="text"
               placeholder="San Francisco, CA"
               value={form.location}
               onChange={update('location')}
+              required
             />
           </div>
         </div>
@@ -259,13 +260,13 @@ export default function CreateEvent() {
         </div>
 
         <div className="field">
-          <label>Description</label>
+          <label>Description *</label>
           <textarea
             rows={3}
             placeholder="What is this event about? Who should attend?"
             value={form.description}
             onChange={update('description')}
-          />
+            required
         </div>
 
         <button
