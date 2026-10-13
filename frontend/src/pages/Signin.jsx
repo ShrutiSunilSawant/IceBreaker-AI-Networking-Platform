@@ -29,7 +29,7 @@ export default function Signin() {
 
   return (
     <AuthLayout title="Welcome back" sub="Sign in to your IceBreaker account.">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         {error && <div className="error-msg">{error}</div>}
 
         <div className="field">
@@ -38,7 +38,7 @@ export default function Signin() {
         </div>
         <div className="field">
           <label>Password</label>
-          <input type="password" placeholder="Your password" value={form.password} onChange={set('password')} required autoComplete="current-password" />
+          <input type="password" placeholder="Your password" value={form.password} onChange={set('password')} required autoComplete="new-password" />
         </div>
 
         <div style={{ textAlign: 'right', marginTop: -12, marginBottom: 20 }}>

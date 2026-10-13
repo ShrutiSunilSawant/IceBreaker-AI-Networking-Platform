@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { listEvents, getEventStats } from '../utils/api'
+import Navbar from '../components/Navbar'
 
 function formatDate(iso) {
   const d = new Date(iso)
@@ -201,20 +202,15 @@ export default function Events() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '48px 24px' }}>
+    <div style={{ minHeight: '100vh', paddingTop: 80 }}>
+      <Navbar />
+      <div style={{ padding: '48px 24px' }}>
       <div className="container">
-        <button
-          className="btn btn-ghost"
-          style={{ marginBottom: 32, padding: '8px 16px', fontSize: '0.9rem' }}
-          onClick={() => navigate('/')}
-        >
-          Back
-        </button>
 
         <div className="fade-up" style={{ marginBottom: 40 }}>
           <h1 style={{ fontSize: '2rem', marginBottom: 8 }}>Upcoming Events</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-            Click an event to learn more, then register to find your match.
+            Click any event to attend it. Fill in your profile and we will match you with the right people.
           </p>
         </div>
 
@@ -296,7 +292,7 @@ export default function Events() {
                   fontSize: '0.8rem', fontWeight: 600,
                   whiteSpace: 'nowrap', flexShrink: 0,
                 }}>
-                  View details
+                  Attend this event
                 </div>
               </div>
             </div>
@@ -321,6 +317,7 @@ export default function Events() {
           onRegister={handleRegister}
         />
       )}
+      </div>
     </div>
   )
 }
