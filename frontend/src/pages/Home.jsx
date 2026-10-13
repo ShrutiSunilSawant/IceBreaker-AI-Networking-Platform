@@ -1,8 +1,13 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 
 export default function Home() {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (localStorage.getItem('platform_token')) navigate('/events')
+  }, [])
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
