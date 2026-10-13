@@ -14,8 +14,12 @@ router = APIRouter(prefix="/matches", tags=["matches"])
 
 MIN_POOL_SIZE = int(os.getenv("MIN_POOL_SIZE", 2))
 MAX_RETRIES = int(os.getenv("MAX_RETRIES", 2))
-TOP_N = 5
-NUM_QUESTIONS = 5
+TOP_N = int(os.getenv("TOP_N", 5))
+NUM_QUESTIONS = int(os.getenv("NUM_QUESTIONS", 5))
+QUALITY_THRESHOLD = float(os.getenv("QUALITY_THRESHOLD", 0.7))
+DIVERSITY_THRESHOLD = float(os.getenv("DIVERSITY_THRESHOLD", 0.97))
+MATCH_PCT_MIN = int(os.getenv("MATCH_PCT_MIN", 60))
+MATCH_PCT_MAX = int(os.getenv("MATCH_PCT_MAX", 98))
 
 
 class MatchRequest(BaseModel):
@@ -90,12 +94,11 @@ async def find_match(
     if not candidates:
         raise HTTPException(status_code=404, detail="No other profiles found in this event yet.")
 
-    # Diversity rerank — penalize scores above 0.97 (too similar)
-    # This is used only for ordering, not for display percentage
+    # Diversity rerank — penalize scores above DIVERSITY_THRESHOLD (too similar)
     reranked = []
     for c in candidates:
         score = c["score"]
-        penalty = max(0, (score - 0.97) * 10)
+        penalty = max(0, (score - DIVERSITY_THRESHOLD) * 10)
         adjusted = score - penalty
         reranked.append({**c, "adjusted_score": adjusted})
     reranked.sort(key=lambda x: x["adjusted_score"], reverse=True)
@@ -118,15 +121,15 @@ async def find_match(
             normalized = (raw - min_score) / score_range
         else:
             normalized = 1.0
-        pct = int(60 + normalized * 38)
-        pct = max(60, min(98, pct))
+        pct = int(MATCH_PCT_MIN + normalized * (MATCH_PCT_MAX - MATCH_PCT_MIN))
+        pct = max(MATCH_PCT_MIN, min(MATCH_PCT_MAX, pct))
 
         profile_b_text = c["metadata"].get("profile_text", "")
         questions = []
         for attempt in range(MAX_RETRIES + 1):
             questions = generate_questions(profile_a_text, profile_b_text, num_questions=NUM_QUESTIONS)
             score = score_questions(profile_a_text, profile_b_text, questions)
-            if score >= 0.7 or attempt == MAX_RETRIES:
+            if score >= QUALITY_THRESHOLD or attempt == MAX_RETRIES:
                 break
         candidate_questions.append(questions)
 

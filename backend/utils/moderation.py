@@ -2,7 +2,7 @@ import os
 from groq import Groq
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-MODEL = "llama-3.1-8b-instant"
+MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 
 def moderate_profile(profile_text: str) -> tuple[bool, str | None]:

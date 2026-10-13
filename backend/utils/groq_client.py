@@ -4,7 +4,7 @@ import json
 from groq import Groq
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-MODEL = "llama-3.1-8b-instant"
+MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 
 def generate_questions(profile_a: str, profile_b: str, num_questions: int = 5) -> list[str]:

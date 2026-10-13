@@ -1,4 +1,5 @@
 import hashlib
+import os
 import re
 import uuid
 from typing import Any
@@ -13,8 +14,12 @@ from models.database import SessionLocal, Profile, Match, Question
 
 # ─── Validation ───────────────────────────────────────────────────────────────
 
-MIN_CHARS = 30
-MAX_CHARS = 500
+MIN_CHARS = int(os.getenv("PROFILE_MIN_CHARS", 30))
+MAX_CHARS = int(os.getenv("PROFILE_MAX_CHARS", 500))
+MAX_RETRIES = int(os.getenv("MAX_RETRIES", 2))
+QUALITY_THRESHOLD = float(os.getenv("QUALITY_THRESHOLD", 0.7))
+DIVERSITY_THRESHOLD = float(os.getenv("DIVERSITY_THRESHOLD", 0.97))
+MIN_POOL_SIZE = int(os.getenv("MIN_POOL_SIZE", 2))
 REQUIRED_FIELDS = ["name", "role", "what_you_do", "looking_for"]
 
 
@@ -158,12 +163,11 @@ def matching_node(state: IcebreakerState) -> IcebreakerState:
     if not candidates:
         return {**state, "matched_profile": None, "match_score": None}
 
-    # Diversity rerank: penalize candidates too similar (score > 0.97)
-    # We want interesting overlap, not identical profiles
+    # Diversity rerank: penalize candidates too similar (above DIVERSITY_THRESHOLD)
     reranked = []
     for c in candidates:
         score = c["score"]
-        penalty = max(0, (score - 0.97) * 10)
+        penalty = max(0, (score - DIVERSITY_THRESHOLD) * 10)
         adjusted = score - penalty
         reranked.append({**c, "adjusted_score": adjusted})
 
@@ -192,8 +196,6 @@ def question_gen_node(state: IcebreakerState) -> IcebreakerState:
 
 # ─── Quality Check ────────────────────────────────────────────────────────────
 
-MAX_RETRIES = int(os.getenv("MAX_RETRIES", 2))
-
 
 def quality_check_node(state: IcebreakerState) -> IcebreakerState:
     profile_a = " ".join(state["sanitized_profile"].values())
@@ -201,7 +203,7 @@ def quality_check_node(state: IcebreakerState) -> IcebreakerState:
     questions = state["icebreaker_questions"]
 
     score = score_questions(profile_a, profile_b, questions)
-    passed = score >= 0.7 or state["retry_count"] >= MAX_RETRIES
+    passed = score >= QUALITY_THRESHOLD or state["retry_count"] >= MAX_RETRIES
 
     return {**state, "quality_score": score, "quality_passed": passed}
 

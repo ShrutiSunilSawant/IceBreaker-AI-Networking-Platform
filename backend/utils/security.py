@@ -5,7 +5,9 @@ from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-SECRET_KEY = os.getenv("JWT_SECRET", "changeme")
+SECRET_KEY = os.getenv("JWT_SECRET")
+if not SECRET_KEY:
+    raise RuntimeError("JWT_SECRET environment variable is not set. Generate one with: python3 -c \"import secrets; print(secrets.token_hex(64))\"")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 EXPIRY_HOURS = int(os.getenv("JWT_EXPIRY_HOURS", 24))
 
