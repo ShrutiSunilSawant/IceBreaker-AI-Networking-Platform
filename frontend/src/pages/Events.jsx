@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { listEvents, getEventStats } from '../utils/api'
 import Navbar from '../components/Navbar'
 
@@ -180,6 +180,9 @@ function EventModal({ event, onClose, onRegister }) {
 
 export default function Events() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const isWelcome = new URLSearchParams(location.search).get('welcome') === '1'
+  const user = JSON.parse(localStorage.getItem('platform_user') || '{}')
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -206,6 +209,24 @@ export default function Events() {
       <Navbar />
       <div style={{ padding: '48px 24px' }}>
       <div className="container">
+
+        {isWelcome && (
+          <div style={{
+            background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.25)',
+            borderRadius: 12, padding: '16px 20px', marginBottom: 28,
+            display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+            <span style={{ fontSize: '1.2rem' }}>🎉</span>
+            <div>
+              <div style={{ fontWeight: 600, color: '#4ade80', fontSize: '0.95rem' }}>
+                Welcome to IceBreaker{user.display_name ? `, ${user.display_name}` : ''}!
+              </div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: 2 }}>
+                Your account is ready. Click any event below to attend and get matched.
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="fade-up" style={{ marginBottom: 40 }}>
           <h1 style={{ fontSize: '2rem', marginBottom: 8 }}>Upcoming Events</h1>

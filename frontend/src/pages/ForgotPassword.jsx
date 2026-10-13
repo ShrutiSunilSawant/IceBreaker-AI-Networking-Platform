@@ -67,8 +67,9 @@ export default function ForgotPassword() {
           {error && <div className="error-msg">{error}</div>}
 
           {devToken && (
-            <div className="success-msg" style={{ fontSize: '0.82rem', wordBreak: 'break-all' }}>
-              <strong>Dev mode - reset token:</strong><br />{devToken}
+            <div style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)', borderRadius: 8, padding: '12px 14px', fontSize: '0.82rem', wordBreak: 'break-all', marginBottom: 16 }}>
+              <div style={{ color: '#fbbf24', fontWeight: 700, marginBottom: 4, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Dev mode only — token shown here instead of email</div>
+              <span style={{ color: 'var(--text-secondary)', fontFamily: 'monospace' }}>{devToken}</span>
             </div>
           )}
 

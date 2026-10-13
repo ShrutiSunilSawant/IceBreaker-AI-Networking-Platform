@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createEvent } from '../utils/api'
+import Navbar from '../components/Navbar'
 
 export default function CreateEvent() {
   const navigate = useNavigate()
@@ -150,15 +151,10 @@ export default function CreateEvent() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '48px 24px' }}>
+    <div style={{ minHeight: '100vh', paddingTop: 80 }}>
+      <Navbar />
+      <div style={{ padding: '48px 24px' }}>
       <div className="container">
-        <button
-          className="btn btn-ghost"
-          style={{ marginBottom: 32, padding: '8px 16px', fontSize: '0.9rem' }}
-          onClick={() => navigate('/events')}
-        >
-          Back to events
-        </button>
 
         <div className="fade-up" style={{ marginBottom: 32 }}>
           <h1 style={{ fontSize: '2rem', marginBottom: 8 }}>Create an event</h1>
@@ -286,6 +282,7 @@ export default function CreateEvent() {
             </span>
           ) : 'Create event'}
         </button>
+      </div>
       </div>
     </div>
   )

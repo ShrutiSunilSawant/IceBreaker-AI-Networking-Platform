@@ -79,7 +79,7 @@ export default function Navbar() {
                   background: 'var(--surface)', border: '1px solid var(--border)',
                   borderRadius: 8, padding: '8px 16px', color: 'var(--text)',
                   display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: '0.9rem',
+                  fontFamily: 'var(--font-body)', fontSize: '0.9rem', width: 'auto',
                 }}
               >
                 <div style={{

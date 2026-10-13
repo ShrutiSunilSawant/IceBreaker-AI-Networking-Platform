@@ -24,7 +24,7 @@ export default function Signup() {
       })
       localStorage.setItem('platform_token', res.data.access_token)
       localStorage.setItem('platform_user', JSON.stringify({ display_name: res.data.display_name, email: res.data.email }))
-      navigate('/events')
+      navigate('/events?welcome=1')
     } catch (err) {
       setError(err.response?.data?.detail || 'Could not create account. Please try again.')
     } finally {
@@ -74,7 +74,7 @@ export function AuthLayout({ title, sub, children }) {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 24px' }}>
       <div style={{ width: '100%', maxWidth: 420 }}>
         <button className="btn btn-ghost" style={{ marginBottom: 28, padding: '8px 16px', fontSize: '0.9rem' }}
-          onClick={() => navigate('/')}>← Back</button>
+          onClick={() => navigate(-1)}>← Back</button>
 
         <div style={{ marginBottom: 32 }}>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.9rem', marginBottom: 8 }}>{title}</h1>

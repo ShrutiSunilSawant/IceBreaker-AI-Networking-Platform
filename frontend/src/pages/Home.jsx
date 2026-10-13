@@ -41,7 +41,7 @@ export default function Home() {
           </div>
 
           <h1 style={{
-            fontFamily: 'var(--font-display)', fontSize: 'clamp(2.8rem, 7vw, 4.5rem)',
+            fontFamily: 'var(--font-display)', fontSize: 'clamp(2.2rem, 5.5vw, 4rem)',
             fontWeight: 800, marginBottom: 24, lineHeight: 1.05,
           }}>
             Skip the small talk.<br />
@@ -88,7 +88,7 @@ export default function Home() {
                 }}>{c.pct}% match</div>
               </div>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 10 }}>{c.desc}</p>
-              <div style={{ fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 500 }}>5 conversation starters</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 500 }}>5 conversation starters ready</div>
             </div>
           ))}
         </div>
