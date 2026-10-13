@@ -299,15 +299,6 @@ export default function Events() {
           ))}
         </div>
 
-        <div style={{ marginTop: 32, textAlign: 'center' }}>
-          <button
-            className="btn btn-ghost"
-            style={{ fontSize: '0.875rem', width: 'auto', padding: '10px 24px' }}
-            onClick={() => navigate('/create-event')}
-          >
-            Create a new event
-          </button>
-        </div>
       </div>
 
       {selected && (

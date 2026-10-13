@@ -4,14 +4,18 @@ import { createEvent } from '../utils/api'
 
 export default function CreateEvent() {
   const navigate = useNavigate()
+  const stored = localStorage.getItem('platform_user')
+  const platformEmail = stored ? JSON.parse(stored).email : ''
+
   const [form, setForm] = useState({
     name: '',
-    date: '',
+    eventDate: '',
+    eventTime: '',
     location: '',
     description: '',
     duration_hours: 3,
     min_pool_size: 2,
-    organizer_email: '',
+    organizer_email: platformEmail,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -22,16 +26,21 @@ export default function CreateEvent() {
 
   const handleSubmit = async () => {
     setError(null)
-    if (!form.name || !form.date || !form.organizer_email) {
-      setError('Event name, date, and your email are required.')
+    if (!form.name || !form.eventDate || !form.eventTime || !form.organizer_email) {
+      setError('Event name, date, time, and your email are required.')
       return
     }
+    const combinedDate = `${form.eventDate}T${form.eventTime}`
     setLoading(true)
     try {
       const res = await createEvent({
-        ...form,
-        min_pool_size: parseInt(form.min_pool_size),
+        name: form.name,
+        date: combinedDate,
+        location: form.location,
+        description: form.description,
         duration_hours: parseFloat(form.duration_hours),
+        min_pool_size: parseInt(form.min_pool_size),
+        organizer_email: form.organizer_email,
       })
       setCreated(res.data)
       // Save organizer token to localStorage
@@ -183,14 +192,26 @@ export default function CreateEvent() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
           <div className="field">
-            <label>Date and time *</label>
+            <label>Date *</label>
             <input
-              type="datetime-local"
-              value={form.date}
-              onChange={update('date')}
+              type="date"
+              value={form.eventDate}
+              onChange={update('eventDate')}
               style={{ colorScheme: 'dark' }}
             />
           </div>
+          <div className="field">
+            <label>Time *</label>
+            <input
+              type="time"
+              value={form.eventTime}
+              onChange={update('eventTime')}
+              style={{ colorScheme: 'dark' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
           <div className="field">
             <label>Location</label>
             <input
