@@ -56,16 +56,18 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="nav-links">
-          <a href="/#how-it-works" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textDecoration: 'none' }}
-            onClick={e => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }) }}>
-            How it works
-          </a>
-          <a href="/#features" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textDecoration: 'none' }}
-            onClick={e => { e.preventDefault(); document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' }) }}>
-            Features
-          </a>
-        </div>
+        {isHome && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="nav-links">
+            <a href="/#how-it-works" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textDecoration: 'none' }}
+              onClick={e => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }) }}>
+              How it works
+            </a>
+            <a href="/#features" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textDecoration: 'none' }}
+              onClick={e => { e.preventDefault(); document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' }) }}>
+              Features
+            </a>
+          </div>
+        )}
 
         {/* Auth area */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
