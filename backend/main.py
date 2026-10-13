@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from models.database import create_tables
-from routers import profiles, matches, feedback, auth, events
+from routers import profiles, matches, feedback, auth, events, users
 
 app = FastAPI(
     title="Icebreaker Bot API",
@@ -29,6 +29,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(users.router)
 app.include_router(events.router)
 app.include_router(profiles.router)
 app.include_router(matches.router)

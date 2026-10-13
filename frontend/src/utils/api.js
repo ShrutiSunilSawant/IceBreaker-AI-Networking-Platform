@@ -6,9 +6,12 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
+  // Platform account token takes priority; fall back to event token
+  const platformToken = localStorage.getItem('platform_token')
   const eventId = localStorage.getItem('current_event_id')
-  const token = eventId ? localStorage.getItem(`token_${eventId}`) : null
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  const eventToken = eventId ? localStorage.getItem(`token_${eventId}`) : null
+  const token = platformToken || eventToken
+  if (token && !config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
