@@ -59,7 +59,7 @@ export default function Signin() {
 
         <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--border)', textAlign: 'center' }}>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
-            Attendee? No account needed —
+            Attendee? No account needed.
           </p>
           <button type="button" className="btn btn-ghost" style={{ padding: '10px 24px', fontSize: '0.9rem' }}
             onClick={() => navigate('/login')}>

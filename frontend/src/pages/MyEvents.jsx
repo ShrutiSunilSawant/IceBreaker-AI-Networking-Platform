@@ -43,7 +43,7 @@ function useCountdown(date, durationHours = 3) {
         const hrs = Math.floor(remaining / (1000 * 60 * 60))
         const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60))
         const secs = Math.floor((remaining % (1000 * 60)) / 1000)
-        setDisplay(`Ongoing — ends in ${hrs}h ${mins}m ${secs}s`)
+        setDisplay(`Ongoing, ends in ${hrs}h ${mins}m ${secs}s`)
         setStatus('ongoing')
         return
       }
@@ -220,7 +220,7 @@ export default function MyEvents() {
                   transition: 'opacity 0.2s, border-color 0.2s',
                 }}
               >
-                {/* Header row — always visible, click to expand */}
+                {/* Header row, always visible, click to expand */}
                 <div
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleToggle(event.id)}

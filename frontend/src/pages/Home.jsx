@@ -4,11 +4,17 @@ import Navbar from '../components/Navbar'
 export default function Home() {
   const navigate = useNavigate()
 
+  const goToEvents = () => {
+    const user = localStorage.getItem('platform_user')
+    if (user) navigate('/events')
+    else navigate('/signin')
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-      <Navbar />
+      <Navbar onBrowseEvents={goToEvents} />
 
-      {/* ── Hero ─────────────────────────────────────────────── */}
+      {/* Hero */}
       <section style={{
         minHeight: '100vh', display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
@@ -32,7 +38,7 @@ export default function Home() {
             borderRadius: 6, padding: '5px 14px', fontSize: '0.78rem',
             fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 32,
           }}>
-            AI-Powered Professional Networking
+            Professional Networking, Reimagined
           </div>
 
           <h1 style={{
@@ -45,29 +51,25 @@ export default function Home() {
             </span>
           </h1>
 
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', marginBottom: 44, lineHeight: 1.75, maxWidth: 520, margin: '0 auto 44px' }}>
-            IceBreaker matches you with the right people at every event and gives you personalized conversation starters — powered by AI, free to use.
+          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.75, maxWidth: 520, margin: '0 auto 44px' }}>
+            IceBreaker matches you with the right people at every event and gives you personalized conversation starters powered by AI.
           </p>
 
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="btn btn-primary" style={{ fontSize: '1rem', padding: '16px 40px', width: 'auto' }}
-              onClick={() => navigate('/events')}>
-              Browse events →
+              onClick={goToEvents}>
+              Browse events
             </button>
             <button className="btn btn-ghost" style={{ fontSize: '1rem', padding: '16px 32px' }}
               onClick={() => navigate('/signup')}>
-              Create free account
+              Create account
             </button>
           </div>
-
-          <p style={{ marginTop: 20, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            No credit card · No paid API · 100% open source
-          </p>
         </div>
 
-        {/* Demo cards */}
+        {/* Hero demo cards */}
         <div style={{ position: 'relative', marginTop: 72, display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-          {demoCards.map((c, i) => (
+          {heroCards.map((c, i) => (
             <div key={i} className="fade-up" style={{
               background: 'var(--surface)', border: '1px solid var(--border)',
               borderRadius: 14, padding: '20px 24px', maxWidth: 260, textAlign: 'left',
@@ -87,24 +89,24 @@ export default function Home() {
                 }}>{c.pct}% match</div>
               </div>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 10 }}>{c.desc}</p>
-              <div style={{ fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 500 }}>5 conversation starters →</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 500 }}>5 conversation starters</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── How It Works ─────────────────────────────────────── */}
+      {/* How It Works */}
       <section id="how-it-works" style={{ padding: '96px 24px', background: 'var(--surface)' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
           <SectionBadge>How it works</SectionBadge>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, marginBottom: 16 }}>
-            From sign-up to conversation<br />in under 2 minutes
+            From sign-up to conversation in under 2 minutes
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: 64, maxWidth: 500, margin: '0 auto 64px' }}>
             No awkward introductions. No wasted time hunting for the right person.
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 32 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 32 }}>
             {steps.map((s, i) => (
               <div key={i} style={{ textAlign: 'left', position: 'relative' }}>
                 <div style={{
@@ -129,7 +131,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Features ─────────────────────────────────────────── */}
+      {/* Features */}
       <section id="features" style={{ padding: '96px 24px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
           <SectionBadge>Features</SectionBadge>
@@ -156,106 +158,179 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Demo ─────────────────────────────────────────────── */}
-      <section id="demo" style={{ padding: '96px 24px', background: 'var(--surface)' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 56 }}>
-            <SectionBadge>Demo</SectionBadge>
+      {/* Product Overview */}
+      <section id="overview" style={{ padding: '96px 24px', background: 'var(--surface)' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+            <SectionBadge>Product Overview</SectionBadge>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, marginBottom: 16 }}>
-              See it in action
+              Built for every role in the room
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-              Here's what you get after registering for an event.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 520, margin: '0 auto' }}>
+              Whether you are hosting or attending, IceBreaker has a clear path for you.
             </p>
           </div>
 
-          <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 18, overflow: 'hidden' }}>
-            {/* Mock browser bar */}
-            <div style={{ background: 'var(--surface-2)', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid var(--border)' }}>
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff5f57' }} />
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffbd2e' }} />
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#28c840' }} />
-              <div style={{ flex: 1, background: 'var(--bg)', borderRadius: 6, padding: '6px 12px', fontSize: '0.75rem', color: 'var(--text-secondary)', marginLeft: 12 }}>
-                icebreaker.app/match/ai-summit-2026
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+            {overviewCards.map((card, i) => (
+              <div key={i} style={{
+                background: 'var(--bg)', border: '1px solid var(--border)',
+                borderRadius: 16, padding: '32px', position: 'relative', overflow: 'hidden',
+              }}>
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: 3,
+                  background: `linear-gradient(90deg, ${card.color1}, ${card.color2})`,
+                }} />
+                <div style={{ fontSize: '2rem', marginBottom: 16 }}>{card.icon}</div>
+                <div style={{
+                  display: 'inline-block', fontSize: '0.72rem', fontWeight: 700,
+                  color: card.labelColor, letterSpacing: '0.08em', textTransform: 'uppercase',
+                  background: card.labelBg, borderRadius: 4, padding: '3px 10px', marginBottom: 14,
+                }}>{card.label}</div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', marginBottom: 12 }}>{card.title}</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 20 }}>{card.desc}</p>
+                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {card.bullets.map((b, bi) => (
+                    <li key={bi} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+                      <span style={{ color: card.labelColor, fontWeight: 700, flexShrink: 0 }}>+</span>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => navigate(card.cta.path)}
+                  style={{
+                    marginTop: 24, background: 'none', border: `1px solid ${card.labelColor}`,
+                    color: card.labelColor, borderRadius: 8, padding: '10px 20px',
+                    fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'var(--font-body)',
+                    transition: 'background 0.2s',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = card.labelBg}
+                  onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                >{card.cta.label}</button>
               </div>
-            </div>
-
-            <div style={{ padding: '32px 24px' }}>
-              <div style={{ marginBottom: 24 }}>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', marginBottom: 4 }}>Your Top Matches</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>AI Summit 2026 · 5 matches found</p>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {demoMatches.map((m, i) => (
-                  <div key={i} style={{
-                    background: 'var(--surface)', border: `1px solid ${i === 0 ? 'rgba(108,99,255,0.4)' : 'var(--border)'}`,
-                    borderRadius: 12, padding: '18px 20px',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16,
-                    boxShadow: i === 0 ? '0 0 24px rgba(108,99,255,0.08)' : 'none',
-                  }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                        <div style={{
-                          width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-                          background: `linear-gradient(135deg, ${m.color1}, ${m.color2})`,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: '0.85rem', fontWeight: 700, color: '#fff',
-                        }}>{m.initials}</div>
-                        <div>
-                          <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{m.name}</div>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{m.role} · {m.company}</div>
-                        </div>
-                      </div>
-                      {i === 0 && (
-                        <div style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '12px 14px', marginTop: 8 }}>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--accent)', fontWeight: 600, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Conversation Starters</div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                            {m.questions.map((q, qi) => (
-                              <div key={qi} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', paddingLeft: 10, borderLeft: '2px solid rgba(108,99,255,0.4)' }}>
-                                {q}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div style={{
-                      background: i === 0 ? 'rgba(108,99,255,0.15)' : 'rgba(255,255,255,0.05)',
-                      color: i === 0 ? 'var(--accent)' : 'var(--text-secondary)',
-                      borderRadius: 8, padding: '6px 12px', fontSize: '0.85rem', fontWeight: 700, flexShrink: 0,
-                    }}>{m.pct}%</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
-      <section style={{ padding: '96px 24px', textAlign: 'center' }}>
+      {/* Demo */}
+      <section id="demo" style={{ padding: '96px 24px' }}>
+        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
+            <SectionBadge>Demo</SectionBadge>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, marginBottom: 16 }}>
+              Here is what happens when you register
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 520, margin: '0 auto' }}>
+              Follow the steps below. The whole flow takes under 2 minutes.
+            </p>
+          </div>
+
+          {/* Step-by-step demo */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+            {/* Step 1 */}
+            <DemoStep number="1" title="Fill in your profile at the event page">
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 16 }}>
+                When you open an event link, you will see a short form. Tell us who you are, what you work on, and what you are hoping to get out of the event. This takes about 60 seconds.
+              </p>
+              <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {['Name and role', 'What you work on right now', 'Who you want to meet', 'Hobbies and interests'].map((f, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(108,99,255,0.15)', border: '1px solid rgba(108,99,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.65rem', color: 'var(--accent)', fontWeight: 700 }}>{i + 1}</div>
+                    <div style={{ height: 10, flex: 1, background: 'var(--surface)', borderRadius: 4 }} />
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', minWidth: 120 }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+            </DemoStep>
+
+            {/* Step 2 */}
+            <DemoStep number="2" title="The AI finds your best matches">
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 16 }}>
+                After you submit, the system embeds your profile and searches everyone else at the event. It picks the 5 people whose goals and background complement yours most closely, then ranks them by compatibility.
+              </p>
+              <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '16px 20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80' }} />
+                  <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Matching complete. 5 people found at AI Summit 2026.</span>
+                </div>
+                {demoMatchRows.map((m, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderTop: '1px solid var(--border)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div style={{ width: 30, height: 30, borderRadius: '50%', background: `linear-gradient(135deg, ${m.c1}, ${m.c2})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 700, color: '#fff', flexShrink: 0 }}>{m.init}</div>
+                      <div>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 500 }}>{m.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{m.role}</div>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '0.82rem', fontWeight: 700, color: i === 0 ? 'var(--accent)' : 'var(--text-secondary)' }}>{m.pct}%</div>
+                  </div>
+                ))}
+              </div>
+            </DemoStep>
+
+            {/* Step 3 */}
+            <DemoStep number="3" title="Click any match to see your conversation starters">
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 16 }}>
+                Tap a match card to open 5 questions written specifically for both of you. Some questions are about your work. Others are about your hobbies. They are never mixed so you always have a natural way to open the conversation.
+              </p>
+              <div style={{ background: 'var(--bg)', border: '1px solid rgba(108,99,255,0.3)', borderRadius: 10, padding: '20px', boxShadow: '0 0 24px rgba(108,99,255,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, paddingBottom: 14, borderBottom: '1px solid var(--border)' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #6c63ff, #a78bfa)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>PN</div>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>Priya Nair</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>AI Researcher</div>
+                  </div>
+                  <div style={{ marginLeft: 'auto', background: 'rgba(108,99,255,0.15)', color: 'var(--accent)', borderRadius: 6, padding: '4px 10px', fontSize: '0.8rem', fontWeight: 700 }}>94%</div>
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 12 }}>Your conversation starters</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {demoQuestions.map((q, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                      <span style={{ color: 'var(--accent)', fontWeight: 700, fontSize: '0.8rem', flexShrink: 0, marginTop: 1 }}>{i + 1}.</span>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{q}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </DemoStep>
+
+            {/* Step 4 */}
+            <DemoStep number="4" title="Walk up and start the conversation">
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.7 }}>
+                Find your matches at the event and use the starters. You already know what they work on and what to ask. No generic icebreakers, no awkward openers, just a real conversation from the first sentence.
+              </p>
+            </DemoStep>
+
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section style={{ padding: '96px 24px', textAlign: 'center', background: 'var(--surface)' }}>
         <div style={{ maxWidth: 560, margin: '0 auto' }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 700, marginBottom: 20 }}>
             Ready to network smarter?
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: 40, lineHeight: 1.7 }}>
-            Create your free account in 30 seconds. No credit card. No catch.
+            Create your account and browse upcoming events in seconds.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="btn btn-primary" style={{ fontSize: '1rem', padding: '16px 40px', width: 'auto' }}
               onClick={() => navigate('/signup')}>
-              Get started free →
+              Get started
             </button>
             <button className="btn btn-ghost" style={{ fontSize: '1rem', padding: '16px 32px' }}
-              onClick={() => navigate('/events')}>
+              onClick={goToEvents}>
               Browse events
             </button>
           </div>
         </div>
       </section>
 
-      {/* ── Footer ───────────────────────────────────────────── */}
+      {/* Footer */}
       <footer style={{ borderTop: '1px solid var(--border)', padding: '40px 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -264,9 +339,8 @@ export default function Home() {
             <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginLeft: 8 }}>© {new Date().getFullYear()}</span>
           </div>
           <div style={{ display: 'flex', gap: 28 }}>
-            <FooterLink onClick={() => navigate('/events')}>Events</FooterLink>
-            <FooterLink onClick={() => navigate('/create-event')}>Host an event</FooterLink>
-            <FooterLink onClick={() => window.open('https://github.com/ShrutiSunilSawant/IceBreaker-AI-Networking-Platform', '_blank')}>GitHub</FooterLink>
+            <FooterLink onClick={() => navigate('/signup')}>Get started</FooterLink>
+            <FooterLink onClick={() => navigate('/signin')}>Sign in</FooterLink>
           </div>
         </div>
       </footer>
@@ -294,37 +368,76 @@ function FooterLink({ onClick, children }) {
   )
 }
 
-const demoCards = [
-  { name: 'Alex Chen', role: 'ML Engineer · Google', pct: 94, desc: 'Working on distributed training infra for large vision models.' },
-  { name: 'Priya Nair', role: 'AI Researcher · DeepMind', pct: 91, desc: 'Exploring alignment techniques for multi-agent systems.' },
-  { name: 'Jordan Kim', role: 'Founder · Stealth AI', pct: 87, desc: 'Building developer tools for LLM evaluation at scale.' },
+function DemoStep({ number, title, children }) {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '48px 1fr', gap: 24, alignItems: 'start' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+        <div style={{
+          width: 48, height: 48, borderRadius: '50%', flexShrink: 0,
+          background: 'linear-gradient(135deg, rgba(108,99,255,0.25), rgba(167,139,250,0.15))',
+          border: '1px solid rgba(108,99,255,0.35)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.1rem', color: 'var(--accent)',
+        }}>{number}</div>
+      </div>
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '28px' }}>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', marginBottom: 14 }}>{title}</h3>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+const heroCards = [
+  { name: 'Alex Chen', role: 'ML Engineer', pct: 94, desc: 'Working on distributed training infrastructure for large vision models.' },
+  { name: 'Priya Nair', role: 'AI Researcher', pct: 91, desc: 'Exploring alignment techniques for multi-agent systems.' },
+  { name: 'Jordan Kim', role: 'Founder', pct: 87, desc: 'Building developer tools for LLM evaluation at scale.' },
 ]
 
 const steps = [
-  { icon: '📋', title: 'Register for an event', desc: 'Fill out a short profile describing your work, what you\'re looking for, and your interests. Takes under 2 minutes.' },
-  { icon: '🤖', title: 'AI finds your matches', desc: 'Our 13-node AI pipeline embeds your profile, searches the event pool semantically, and ranks your top 5 compatible matches.' },
-  { icon: '💬', title: 'Get conversation starters', desc: 'For each match you get 5 personalized, domain-specific questions — work-focused or hobby-focused, never a generic mix.' },
-  { icon: '🤝', title: 'Walk up and connect', desc: 'Use your starters at the event. No awkward "so what do you do?" — you already know what to say.' },
+  { icon: '📋', title: 'Register for an event', desc: 'Fill out a short profile describing your work, what you are looking for, and your interests. Takes under 2 minutes.' },
+  { icon: '🤖', title: 'AI finds your matches', desc: 'The system embeds your profile and searches the event pool to rank your top 5 most compatible matches.' },
+  { icon: '💬', title: 'Get conversation starters', desc: 'For each match you get 5 personalized questions, either work-focused or hobby-focused, never generic.' },
+  { icon: '🤝', title: 'Walk up and connect', desc: 'Use your starters at the event. You already know what to say before you say hello.' },
 ]
 
 const features = [
-  { icon: '🧠', title: 'Semantic Matching', desc: 'Uses 384-dimensional sentence embeddings (all-MiniLM-L6-v2) to find people who genuinely complement your work, not just keyword matches.' },
-  { icon: '✨', title: 'AI Conversation Starters', desc: 'Llama 3.1 generates 5 personalized questions per match — specific to both your profiles, never generic or canned.' },
-  { icon: '🎯', title: 'Domain Separation', desc: 'Questions are either entirely work-focused or entirely hobby-focused. Never a forced analogy between the two.' },
-  { icon: '🔒', title: 'Privacy First', desc: 'Raw emails are never stored. SHA-256 hashes serve as identifiers across events, enabling conflict detection without exposing PII.' },
-  { icon: '📅', title: 'Multi-Event Support', desc: 'Attend multiple events simultaneously. Built-in conflict detection warns you if two events overlap.' },
-  { icon: '💸', title: 'Completely Free', desc: 'Built on open-source tools. Local embeddings, free-tier Groq API. Zero operating cost, deployable anywhere.' },
+  { icon: '🧠', title: 'Semantic Matching', desc: 'Finds people who genuinely complement your work, not just keyword matches. Powered by sentence embeddings running locally.' },
+  { icon: '✨', title: 'Personalized Starters', desc: 'Every question is written specifically for you and your match. Nothing generic, nothing recycled.' },
+  { icon: '🎯', title: 'Domain Separation', desc: 'Questions are either entirely about your work or entirely about your hobbies. Never a forced mix of the two.' },
+  { icon: '🔒', title: 'Privacy First', desc: 'Your email is hashed and never stored in plain text. We identify you across events without ever exposing your personal data.' },
+  { icon: '📅', title: 'Multi-Event Support', desc: 'Attend multiple events at once. The system automatically warns you if two events overlap in time.' },
 ]
 
-const demoMatches = [
+const overviewCards = [
   {
-    name: 'Priya Nair', role: 'AI Researcher', company: 'DeepMind', pct: 94,
-    initials: 'PN', color1: '#6c63ff', color2: '#a78bfa',
-    questions: [
-      'You\'re working on alignment for multi-agent systems — where do you think the coordination problem is hardest?',
-      'What\'s a failure mode in your current research that doesn\'t show up in benchmarks?',
-    ],
+    icon: '🎟', label: 'For Attendees', labelColor: '#a78bfa', labelBg: 'rgba(167,139,250,0.12)',
+    color1: '#6c63ff', color2: '#a78bfa',
+    title: 'Find the right people at every event',
+    desc: 'You show up, fill in a quick profile, and leave with five names to talk to and exactly what to say to each of them.',
+    bullets: ['Register in under 2 minutes', 'Get 5 ranked matches with compatibility scores', 'See 5 conversation starters per match', 'Works at any event you are invited to'],
+    cta: { label: 'Browse events', path: '/events' },
   },
-  { name: 'Alex Chen', role: 'ML Engineer', company: 'Google', pct: 89, initials: 'AC', color1: '#0ea5e9', color2: '#38bdf8', questions: [] },
-  { name: 'Jordan Kim', role: 'Founder', company: 'Stealth AI', pct: 84, initials: 'JK', color1: '#10b981', color2: '#34d399', questions: [] },
+  {
+    icon: '🏛', label: 'For Organizers', labelColor: '#4ade80', labelBg: 'rgba(74,222,128,0.1)',
+    color1: '#4ade80', color2: '#34d399',
+    title: 'Run a better networking event',
+    desc: 'Create an event in seconds, share the link with your attendees, and let the platform handle all the matching automatically.',
+    bullets: ['Create and manage events from a dashboard', 'Attendees self-register with no extra setup', 'Matching opens automatically once enough people join', 'Monitor attendance and activity in real time'],
+    cta: { label: 'Create an event', path: '/create-event' },
+  },
+]
+
+const demoMatchRows = [
+  { init: 'PN', name: 'Priya Nair', role: 'AI Researcher', pct: 94, c1: '#6c63ff', c2: '#a78bfa' },
+  { init: 'AC', name: 'Alex Chen', role: 'ML Engineer', pct: 89, c1: '#0ea5e9', c2: '#38bdf8' },
+  { init: 'JK', name: 'Jordan Kim', role: 'Founder', pct: 84, c1: '#10b981', c2: '#34d399' },
+  { init: 'SM', name: 'Sara Malik', role: 'Product Lead', pct: 79, c1: '#f59e0b', c2: '#fbbf24' },
+  { init: 'DL', name: 'David Lin', role: 'Research Engineer', pct: 73, c1: '#ec4899', c2: '#f472b6' },
+]
+
+const demoQuestions = [
+  'You are both working on inference optimization. What is the biggest performance gain you have found that most people overlook?',
+  'Your work touches on alignment for multi-agent systems. What does a failure look like in practice?',
+  'You both climb. What is a route that completely changed how you think about risk?',
 ]

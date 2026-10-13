@@ -101,7 +101,7 @@ export default function CreateEvent() {
               textAlign: 'left',
             }}>
               <p style={{ fontSize: '0.75rem', color: '#fbbf24', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
-                Your organizer token — save this
+                Your organizer token. Save this
               </p>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 8 }}>
                 You need this to end or cancel the event. It has been saved in your browser but save it somewhere safe too.

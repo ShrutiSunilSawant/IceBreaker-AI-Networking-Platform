@@ -68,7 +68,7 @@ export default function ForgotPassword() {
 
           {devToken && (
             <div className="success-msg" style={{ fontSize: '0.82rem', wordBreak: 'break-all' }}>
-              <strong>Dev mode — reset token:</strong><br />{devToken}
+              <strong>Dev mode - reset token:</strong><br />{devToken}
             </div>
           )}
 

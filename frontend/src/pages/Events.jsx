@@ -149,7 +149,7 @@ function EventModal({ event, onClose, onRegister }) {
             </div>
             {!stats.matching_open && (
               <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 8 }}>
-                Register now — you will be matched automatically once {stats.min_pool_size - stats.registered} more {stats.min_pool_size - stats.registered === 1 ? 'person registers' : 'people register'}.
+                Register now. You will be matched automatically once {stats.min_pool_size - stats.registered} more {stats.min_pool_size - stats.registered === 1 ? 'person registers' : 'people register'}.
               </p>
             )}
           </div>
@@ -185,6 +185,10 @@ export default function Events() {
   const [selected, setSelected] = useState(null)
 
   useEffect(() => {
+    if (!localStorage.getItem('platform_token')) {
+      navigate('/signin')
+      return
+    }
     listEvents()
       .then((res) => setEvents(res.data))
       .catch(() => setError('Could not load events.'))
