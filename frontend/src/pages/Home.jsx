@@ -25,7 +25,7 @@ export default function Home() {
           top: '20%', right: '10%', pointerEvents: 'none',
         }} />
 
-        <div className="fade-up" style={{ position: 'relative', maxWidth: 640 }}>
+        <div className="fade-up" style={{ position: 'relative', maxWidth: 820 }}>
           <div style={{
             display: 'inline-block', background: 'var(--accent-dim)',
             color: 'var(--accent)', border: '1px solid rgba(108,99,255,0.3)',
@@ -45,7 +45,7 @@ export default function Home() {
             </span>
           </h1>
 
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.75, maxWidth: 520, margin: '0 auto 44px' }}>
+          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.75, maxWidth: 620, margin: '0 auto 44px' }}>
             IceBreaker matches you with the right people at every event and gives you personalized conversation starters powered by AI.
           </p>
 

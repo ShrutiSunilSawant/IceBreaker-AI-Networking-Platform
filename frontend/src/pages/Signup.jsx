@@ -24,7 +24,7 @@ export default function Signup() {
       })
       localStorage.setItem('platform_token', res.data.access_token)
       localStorage.setItem('platform_user', JSON.stringify({ display_name: res.data.display_name, email: res.data.email }))
-      navigate('/')
+      navigate('/events')
     } catch (err) {
       setError(err.response?.data?.detail || 'Could not create account. Please try again.')
     } finally {
@@ -33,25 +33,25 @@ export default function Signup() {
   }
 
   return (
-    <AuthLayout title="Create your account" sub="Free forever. No credit card required.">
+    <AuthLayout title="Create your account" sub="Join IceBreaker to start networking smarter.">
       <form onSubmit={handleSubmit}>
         {error && <div className="error-msg">{error}</div>}
 
         <div className="field">
           <label>Display name</label>
-          <input type="text" placeholder="Jane Smith" value={form.display_name} onChange={set('display_name')} required autoFocus />
+          <input type="text" placeholder="Jane Smith" value={form.display_name} onChange={set('display_name')} required autoFocus autoComplete="off" />
         </div>
         <div className="field">
           <label>Email</label>
-          <input type="email" placeholder="you@company.com" value={form.email} onChange={set('email')} required />
+          <input type="email" placeholder="you@company.com" value={form.email} onChange={set('email')} required autoComplete="off" />
         </div>
         <div className="field">
           <label>Password</label>
-          <input type="password" placeholder="Min. 8 characters" value={form.password} onChange={set('password')} required />
+          <input type="password" placeholder="Min. 8 characters" value={form.password} onChange={set('password')} required autoComplete="new-password" />
         </div>
         <div className="field">
           <label>Confirm password</label>
-          <input type="password" placeholder="Same password again" value={form.confirm} onChange={set('confirm')} required />
+          <input type="password" placeholder="Same password again" value={form.confirm} onChange={set('confirm')} required autoComplete="new-password" />
         </div>
 
         <button className="btn btn-primary" type="submit" disabled={loading}

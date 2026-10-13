@@ -19,7 +19,7 @@ export default function Signin() {
       const res = await api.post('/users/signin', { email: form.email, password: form.password })
       localStorage.setItem('platform_token', res.data.access_token)
       localStorage.setItem('platform_user', JSON.stringify({ display_name: res.data.display_name, email: res.data.email }))
-      navigate('/')
+      navigate('/events')
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid email or password.')
     } finally {
@@ -34,11 +34,11 @@ export default function Signin() {
 
         <div className="field">
           <label>Email</label>
-          <input type="email" placeholder="you@company.com" value={form.email} onChange={set('email')} required autoFocus />
+          <input type="email" placeholder="you@company.com" value={form.email} onChange={set('email')} required autoFocus autoComplete="off" />
         </div>
         <div className="field">
           <label>Password</label>
-          <input type="password" placeholder="Your password" value={form.password} onChange={set('password')} required />
+          <input type="password" placeholder="Your password" value={form.password} onChange={set('password')} required autoComplete="current-password" />
         </div>
 
         <div style={{ textAlign: 'right', marginTop: -12, marginBottom: 20 }}>
@@ -54,18 +54,8 @@ export default function Signin() {
 
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
           Don't have an account?{' '}
-          <Link to="/signup" style={{ color: 'var(--accent)' }}>Create one free</Link>
+          <Link to="/signup" style={{ color: 'var(--accent)' }}>Create one</Link>
         </p>
-
-        <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
-            Attendee? No account needed.
-          </p>
-          <button type="button" className="btn btn-ghost" style={{ padding: '10px 24px', fontSize: '0.9rem' }}
-            onClick={() => navigate('/login')}>
-            Sign in to your event →
-          </button>
-        </div>
       </form>
     </AuthLayout>
   )
