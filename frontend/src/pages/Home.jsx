@@ -6,7 +6,7 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-      <Navbar onBrowseEvents={goToEvents} />
+      <Navbar />
 
       {/* Hero */}
       <section style={{
