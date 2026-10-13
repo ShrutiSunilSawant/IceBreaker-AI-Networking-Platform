@@ -38,7 +38,7 @@ export default function Navbar() {
       padding: '0 24px',
     }}>
       <div style={{
-        maxWidth: 1100, margin: '0 auto',
+        maxWidth: 1280, margin: '0 auto',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         height: 64,
       }}>

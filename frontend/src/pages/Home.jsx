@@ -96,7 +96,7 @@ export default function Home() {
 
       {/* How It Works */}
       <section id="how-it-works" style={{ padding: '96px 24px', background: 'var(--surface)' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
           <SectionBadge>How it works</SectionBadge>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, marginBottom: 16 }}>
             From sign-up to conversation in under 2 minutes
@@ -132,7 +132,7 @@ export default function Home() {
 
       {/* Features */}
       <section id="features" style={{ padding: '96px 24px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
           <SectionBadge>Features</SectionBadge>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, marginBottom: 56 }}>
             Everything you need to connect
@@ -159,7 +159,7 @@ export default function Home() {
 
       {/* Product Overview */}
       <section id="overview" style={{ padding: '96px 24px', background: 'var(--surface)' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 64 }}>
             <SectionBadge>Product Overview</SectionBadge>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, marginBottom: 16 }}>
@@ -215,7 +215,7 @@ export default function Home() {
 
       {/* Demo */}
       <section id="demo" style={{ padding: '96px 24px' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <SectionBadge>Demo</SectionBadge>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, marginBottom: 16 }}>
@@ -331,7 +331,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer style={{ borderTop: '1px solid var(--border)', padding: '40px 24px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ width: 24, height: 24, borderRadius: 6, background: 'linear-gradient(135deg, #6c63ff, #a78bfa)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, color: '#fff' }}>✦</div>
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.95rem' }}>IceBreaker</span>
