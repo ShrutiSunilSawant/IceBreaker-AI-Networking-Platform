@@ -1,6 +1,7 @@
+import os
 import uuid
 from datetime import datetime
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 import hashlib
@@ -8,6 +9,13 @@ from sqlalchemy.orm import Session
 
 from models.database import get_db, Event, Profile
 from utils.groq_client import generate_event_prep
+from utils.moderation import moderate_event
+
+# Simple in-process rate limit for event creation: 1 per IP per hour.
+# Redis-backed per-endpoint limiting can be added later; this covers the common case.
+import time
+_event_creation_log: dict[str, float] = {}
+_EVENT_CREATE_INTERVAL = int(os.getenv("EVENT_CREATE_INTERVAL_SECONDS", 3600))
 
 router = APIRouter(prefix="/events", tags=["events"])
 
@@ -95,7 +103,30 @@ async def get_event_stats(event_id: str, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=dict)
-async def create_event(payload: EventCreate, db: Session = Depends(get_db)):
+async def create_event(payload: EventCreate, request: Request, db: Session = Depends(get_db)):
+    # Rate limit: 1 event creation per IP per hour
+    client_ip = request.client.host if request.client else "unknown"
+    now = time.time()
+    last = _event_creation_log.get(client_ip, 0)
+    if now - last < _EVENT_CREATE_INTERVAL:
+        wait = int(_EVENT_CREATE_INTERVAL - (now - last))
+        raise HTTPException(
+            status_code=429,
+            detail=f"You can only create one event per hour. Please wait {wait} seconds.",
+        )
+
+    # Auto-moderate event content before saving
+    passed, reason = moderate_event(
+        name=payload.name,
+        description=payload.description or "",
+        location=payload.location or "",
+    )
+    if not passed:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Event did not pass content review: {reason}",
+        )
+
     existing = db.query(Event).filter(
         Event.name == payload.name,
         Event.active == True
@@ -124,6 +155,8 @@ async def create_event(payload: EventCreate, db: Session = Depends(get_db)):
     db.add(event)
     db.commit()
     db.refresh(event)
+
+    _event_creation_log[client_ip] = time.time()
 
     return {
         **to_response(event).model_dump(),
