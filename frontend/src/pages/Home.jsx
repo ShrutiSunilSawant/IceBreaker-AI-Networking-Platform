@@ -4,12 +4,6 @@ import Navbar from '../components/Navbar'
 export default function Home() {
   const navigate = useNavigate()
 
-  const goToEvents = () => {
-    const user = localStorage.getItem('platform_user')
-    if (user) navigate('/events')
-    else navigate('/signin')
-  }
-
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <Navbar onBrowseEvents={goToEvents} />
@@ -57,12 +51,12 @@ export default function Home() {
 
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="btn btn-primary" style={{ fontSize: '1rem', padding: '16px 40px', width: 'auto' }}
-              onClick={goToEvents}>
-              Browse events
+              onClick={() => navigate('/signup')}>
+              Get started
             </button>
             <button className="btn btn-ghost" style={{ fontSize: '1rem', padding: '16px 32px' }}
-              onClick={() => navigate('/signup')}>
-              Create account
+              onClick={() => navigate('/signin')}>
+              Sign in
             </button>
           </div>
         </div>
@@ -323,8 +317,8 @@ export default function Home() {
               Get started
             </button>
             <button className="btn btn-ghost" style={{ fontSize: '1rem', padding: '16px 32px' }}
-              onClick={goToEvents}>
-              Browse events
+              onClick={() => navigate('/signin')}>
+              Sign in
             </button>
           </div>
         </div>
@@ -339,8 +333,8 @@ export default function Home() {
             <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginLeft: 8 }}>© {new Date().getFullYear()}</span>
           </div>
           <div style={{ display: 'flex', gap: 28 }}>
-            <FooterLink onClick={() => navigate('/signup')}>Get started</FooterLink>
             <FooterLink onClick={() => navigate('/signin')}>Sign in</FooterLink>
+            <FooterLink onClick={() => navigate('/signup')}>Create account</FooterLink>
           </div>
         </div>
       </footer>
@@ -416,7 +410,7 @@ const overviewCards = [
     title: 'Find the right people at every event',
     desc: 'You show up, fill in a quick profile, and leave with five names to talk to and exactly what to say to each of them.',
     bullets: ['Register in under 2 minutes', 'Get 5 ranked matches with compatibility scores', 'See 5 conversation starters per match', 'Works at any event you are invited to'],
-    cta: { label: 'Browse events', path: '/events' },
+    cta: { label: 'Get started', path: '/signup' },
   },
   {
     icon: '🏛', label: 'For Organizers', labelColor: '#4ade80', labelBg: 'rgba(74,222,128,0.1)',

@@ -57,7 +57,6 @@ export default function Navbar() {
 
         {/* Desktop nav links */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="nav-links">
-          <NavLink to="/events">Events</NavLink>
           <a href="/#how-it-works" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textDecoration: 'none' }}
             onClick={e => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }) }}>
             How it works
