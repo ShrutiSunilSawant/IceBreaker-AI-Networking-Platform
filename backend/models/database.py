@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from sqlalchemy import create_engine, Column, String, Boolean, Integer, Float, DateTime, ForeignKey
+from sqlalchemy import create_engine, Column, String, Boolean, Integer, Float, DateTime, ForeignKey, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -40,6 +40,7 @@ class Event(Base):
     min_pool_size = Column(Integer, default=10)
     active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    prep_cache = Column(Text, nullable=True)
 
 
 class Profile(Base):

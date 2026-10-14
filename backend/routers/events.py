@@ -79,12 +79,18 @@ async def get_event_prep(event_id: str, db: Session = Depends(get_db)):
     event = db.query(Event).filter_by(id=event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found.")
+    if event.prep_cache:
+        import json
+        return {"event_id": event_id, "prep": json.loads(event.prep_cache)}
     prep = generate_event_prep(
         event_name=event.name,
         description=event.description or "",
         date=event.date.isoformat(),
         location=event.location or "",
     )
+    import json
+    event.prep_cache = json.dumps(prep)
+    db.commit()
     return {"event_id": event_id, "prep": prep}
 
 
