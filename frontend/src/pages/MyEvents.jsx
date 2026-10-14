@@ -133,9 +133,10 @@ export default function MyEvents() {
       await unregisterFromEvent(userId, event.id)
       removeEventFromStorage(event.id)
       setEvents(prev => prev.filter(e => e.id !== event.id))
-      if (expanded === event.id) setExpanded(null)
-    } catch {
-      alert('Could not unregister. Please try again.')
+      if (prepOpen === event.id) setPrepOpen(null)
+    } catch (err) {
+      const detail = err.response?.data?.detail
+      alert(detail || 'Could not unregister. Please try again.')
     } finally {
       setUnregistering(null)
     }
