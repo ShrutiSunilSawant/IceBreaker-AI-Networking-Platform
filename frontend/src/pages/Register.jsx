@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getEvent, getToken, submitProfile } from '../utils/api'
-import { isRegisteredForEvent, saveEventId, saveToken, saveUserId, saveEventId as setCurrentEvent } from '../utils/auth'
+import { isRegisteredForEvent, saveEventId, saveToken, saveUserId, saveEventId as setCurrentEvent, clearStaleEventToken } from '../utils/auth'
 import ProfileForm from '../components/ProfileForm'
 
 export default function Register() {
@@ -10,6 +10,7 @@ export default function Register() {
   const [event, setEvent] = useState(null)
   const [error, setError] = useState(null)
 
+  clearStaleEventToken(eventId)
   const alreadyRegistered = isRegisteredForEvent(eventId)
 
   useEffect(() => {

@@ -1,5 +1,11 @@
-export const saveToken = (token, eventId) =>
+export const saveToken = (token, eventId) => {
   localStorage.setItem(`token_${eventId}`, token)
+  // Tag this token with the current platform user's email so stale tokens
+  // from a different account can be detected and cleared.
+  const platformUser = localStorage.getItem('platform_user')
+  const email = platformUser ? JSON.parse(platformUser).email : null
+  if (email) localStorage.setItem(`token_owner_${eventId}`, email)
+}
 
 export const saveUserId = (id, eventId) =>
   localStorage.setItem(`user_id_${eventId}`, id)
@@ -32,9 +38,25 @@ export const getMyEvents = () => {
 
 export const removeEventFromStorage = (eventId) => {
   localStorage.removeItem(`token_${eventId}`)
+  localStorage.removeItem(`token_owner_${eventId}`)
   localStorage.removeItem(`user_id_${eventId}`)
   if (localStorage.getItem('current_event_id') === eventId) {
     localStorage.removeItem('current_event_id')
+  }
+}
+
+// Clear event token if it belongs to a different platform account.
+export const clearStaleEventToken = (eventId) => {
+  const token = localStorage.getItem(`token_${eventId}`)
+  if (!token) return
+  const owner = localStorage.getItem(`token_owner_${eventId}`)
+  if (!owner) return // old token with no owner tag — leave it
+  const platformUser = localStorage.getItem('platform_user')
+  const currentEmail = platformUser ? JSON.parse(platformUser).email : null
+  if (currentEmail && owner !== currentEmail) {
+    localStorage.removeItem(`token_${eventId}`)
+    localStorage.removeItem(`token_owner_${eventId}`)
+    localStorage.removeItem(`user_id_${eventId}`)
   }
 }
 
