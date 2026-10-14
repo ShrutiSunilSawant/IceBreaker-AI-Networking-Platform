@@ -101,6 +101,7 @@ export default function MyEvents() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
+  const [prepOpen, setPrepOpen] = useState(null)
   const [unregistering, setUnregistering] = useState(null)
   const currentEventId = getStoredEventId()
 
@@ -249,7 +250,7 @@ export default function MyEvents() {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, flexWrap: 'wrap' }}>
                       {!isEnded && (
                         <div
                           style={{
@@ -265,6 +266,24 @@ export default function MyEvents() {
                           Find match
                         </div>
                       )}
+                      <div
+                        style={{
+                          background: prepOpen === event.id ? 'rgba(251,191,36,0.15)' : 'var(--surface-2)',
+                          color: prepOpen === event.id ? '#fbbf24' : 'var(--text-secondary)',
+                          border: `1px solid ${prepOpen === event.id ? 'rgba(251,191,36,0.3)' : 'var(--border)'}`,
+                          borderRadius: 6, padding: '6px 14px',
+                          fontSize: '0.8rem', fontWeight: 600,
+                          whiteSpace: 'nowrap', cursor: 'pointer',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          const opening = prepOpen !== event.id
+                          setPrepOpen(opening ? event.id : null)
+                          if (opening) setExpanded(event.id)
+                        }}
+                      >
+                        ✦ AI Prep
+                      </div>
                       <span style={{
                         fontSize: '0.85rem',
                         color: 'var(--text-secondary)',
@@ -300,8 +319,8 @@ export default function MyEvents() {
                       </div>
                     )}
 
-                    {/* Prep guide */}
-                    <EventPrep eventId={event.id} description={null} />
+                    {/* Prep guide — always shown when expanded, highlighted when opened via AI Prep button */}
+                    <EventPrep eventId={event.id} description={null} autoLoad={prepOpen === event.id} />
 
                     {/* Unregister */}
                     <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border)' }}>

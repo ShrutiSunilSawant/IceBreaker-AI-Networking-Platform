@@ -1,18 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-export default function EventPrep({ eventId, description }) {
+export default function EventPrep({ eventId, description, autoLoad }) {
   const [prep, setPrep] = useState(null)
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [error, setError] = useState(null)
 
-  const fetchPrep = async () => {
-    if (open && prep) { setOpen(false); return }
-    if (open && !prep) { setOpen(false); return }
-    setOpen(true)
-    if (prep) return
+  useEffect(() => {
+    if (autoLoad && !open) {
+      setOpen(true)
+      if (!prep) loadPrep()
+    }
+  }, [autoLoad])
 
+  const loadPrep = async () => {
     setLoading(true)
     setError(null)
     try {
@@ -23,6 +25,14 @@ export default function EventPrep({ eventId, description }) {
     } finally {
       setLoading(false)
     }
+  }
+
+  const fetchPrep = async () => {
+    if (open && prep) { setOpen(false); return }
+    if (open && !prep) { setOpen(false); return }
+    setOpen(true)
+    if (prep) return
+    await loadPrep()
   }
 
   return (
