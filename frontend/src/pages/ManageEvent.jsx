@@ -46,7 +46,8 @@ export default function ManageEvent() {
       await axios.post(`/api/events/${eventId}/end?organizer_token=${token}`)
       setDone('ended')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Could not end event.')
+      const s = err.response?.status
+      setError(s === 403 || s === 401 ? 'Invalid organizer token. Check the URL or your saved token.' : err.response?.data?.detail || 'Could not end event.')
     } finally {
       setActionLoading(null)
     }
@@ -60,7 +61,8 @@ export default function ManageEvent() {
       await axios.delete(`/api/events/${eventId}?organizer_token=${token}`)
       setDone('cancelled')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Could not cancel event.')
+      const s = err.response?.status
+      setError(s === 403 || s === 401 ? 'Invalid organizer token. Check the URL or your saved token.' : err.response?.data?.detail || 'Could not cancel event.')
     } finally {
       setActionLoading(null)
     }

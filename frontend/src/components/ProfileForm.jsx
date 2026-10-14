@@ -43,7 +43,15 @@ export default function ProfileForm({ eventId, onSuccess }) {
       saveUserId(profileRes.data.user_id, eventId)
       return profileRes.data.user_id
     } catch (err) {
-      setError(err.response?.data?.detail || 'Something went wrong. Please try again.')
+      const status = err.response?.status
+      const detail = err.response?.data?.detail || ''
+      if (status === 403 || status === 401) {
+        setError('Session issue detected. Please refresh the page and try again.')
+      } else if (status === 422 && detail.toLowerCase().includes('moderation')) {
+        setError(detail)
+      } else {
+        setError(detail || 'Something went wrong. Please try again.')
+      }
       return null
     } finally {
       setLoading(false)

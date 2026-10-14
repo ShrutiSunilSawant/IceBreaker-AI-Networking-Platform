@@ -28,7 +28,17 @@ export default function Match() {
       if (data.waiting) { setPoolInfo(data); setState('waiting') }
       else { setMatch(data); setState('matched') }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Could not find a match. Please try again.')
+      const status = err.response?.status
+      const detail = err.response?.data?.detail || ''
+      if (status === 403 || status === 401 || detail.toLowerCase().includes('not authorized')) {
+        setError('Your session has expired. Please go back and re-register for this event.')
+      } else if (status === 429) {
+        setError('Too many requests. Please wait a moment and try again.')
+      } else if (status === 404 && detail.toLowerCase().includes('profile')) {
+        setError('Your profile was not found. Please go back and register for this event first.')
+      } else {
+        setError(detail || 'Could not find a match. Please try again.')
+      }
       setState('error')
     }
   }
@@ -75,9 +85,15 @@ export default function Match() {
         )}
 
         {state === 'error' && (
-          <div style={{ paddingTop: 48 }} className="fade-up">
-            <div className="error-msg">{error}</div>
-            <button className="btn btn-primary" onClick={fetchMatch}>Try again</button>
+          <div style={{ paddingTop: 48, maxWidth: 480, margin: '0 auto', textAlign: 'center' }} className="fade-up">
+            <div style={{ fontSize: '2rem', marginBottom: 16 }}>⏳</div>
+            <h2 style={{ fontSize: '1.25rem', marginBottom: 10 }}>Not enough attendees yet</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: 24, lineHeight: 1.6 }}>
+              {error}
+            </p>
+            <button className="btn btn-primary" style={{ width: 'auto', padding: '12px 28px' }} onClick={fetchMatch}>
+              Try again
+            </button>
           </div>
         )}
       </div>
