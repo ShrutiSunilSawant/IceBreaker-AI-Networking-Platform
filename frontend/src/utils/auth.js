@@ -50,10 +50,10 @@ export const clearStaleEventToken = (eventId) => {
   const token = localStorage.getItem(`token_${eventId}`)
   if (!token) return
   const owner = localStorage.getItem(`token_owner_${eventId}`)
-  if (!owner) return // old token with no owner tag — leave it
   const platformUser = localStorage.getItem('platform_user')
   const currentEmail = platformUser ? JSON.parse(platformUser).email : null
-  if (currentEmail && owner !== currentEmail) {
+  // Clear if: owner tag exists and doesn't match, OR no owner tag but a platform user is logged in (legacy token)
+  if (currentEmail && (!owner || owner !== currentEmail)) {
     localStorage.removeItem(`token_${eventId}`)
     localStorage.removeItem(`token_owner_${eventId}`)
     localStorage.removeItem(`user_id_${eventId}`)

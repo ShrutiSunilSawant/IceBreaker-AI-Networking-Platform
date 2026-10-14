@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getEvent, getToken, submitProfile } from '../utils/api'
-import { isRegisteredForEvent, saveEventId, saveToken, saveUserId, saveEventId as setCurrentEvent, clearStaleEventToken } from '../utils/auth'
+import { isRegisteredForEvent, saveEventId, saveToken, saveUserId, saveEventId as setCurrentEvent, clearStaleEventToken, removeEventFromStorage } from '../utils/auth'
 import ProfileForm from '../components/ProfileForm'
 
 export default function Register() {
@@ -9,9 +9,10 @@ export default function Register() {
   const { eventId } = useParams()
   const [event, setEvent] = useState(null)
   const [error, setError] = useState(null)
+  const [forceNew, setForceNew] = useState(false)
 
   clearStaleEventToken(eventId)
-  const alreadyRegistered = isRegisteredForEvent(eventId)
+  const alreadyRegistered = !forceNew && isRegisteredForEvent(eventId)
 
   useEffect(() => {
     if (!eventId) { navigate('/events'); return }
@@ -94,6 +95,15 @@ export default function Register() {
                 My events
               </button>
             </div>
+            <p style={{ marginTop: 20, fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+              Not you?{' '}
+              <span
+                style={{ color: 'var(--accent)', cursor: 'pointer' }}
+                onClick={() => { removeEventFromStorage(eventId); setForceNew(true) }}
+              >
+                Register with a different account
+              </span>
+            </p>
           </div>
         )}
 
