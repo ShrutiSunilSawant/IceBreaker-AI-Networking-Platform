@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import os
 import uuid
 
-from models.database import SessionLocal, Match, Question
+from models.database import SessionLocal, Match, Question, Event
 from models.schemas import MatchResponse, WaitingResponse, MatchedPerson
 from utils.redis_client import check_rate_limit
 from utils.security import get_current_user
@@ -65,14 +65,21 @@ async def find_match(
     if current_user["sub"] != payload.user_id:
         raise HTTPException(status_code=403, detail="Not authorized.")
 
-    # Check pool size
+    # Check pool size against the event's own min_pool_size
+    db = SessionLocal()
+    try:
+        event = db.query(Event).filter_by(id=payload.event_id).first()
+        event_min = event.min_pool_size if event else MIN_POOL_SIZE
+    finally:
+        db.close()
+
     count = get_collection_count(event_id=payload.event_id)
-    if count < MIN_POOL_SIZE:
+    if count < event_min:
         return WaitingResponse(
             waiting=True,
             pool_size=count,
-            needed=MIN_POOL_SIZE - count,
-            message=f"Matching opens when {MIN_POOL_SIZE} people have signed up. {MIN_POOL_SIZE - count} more needed."
+            needed=event_min - count,
+            message=f"Matching opens when {event_min} people have signed up. {event_min - count} more needed."
         )
 
     # Fetch user's stored embedding
