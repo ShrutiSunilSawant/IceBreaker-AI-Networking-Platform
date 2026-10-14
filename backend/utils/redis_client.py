@@ -6,6 +6,9 @@ RATE_LIMIT = int(os.getenv("RATE_LIMIT_PER_MINUTE", 30))
 
 r = redis.from_url(REDIS_URL, decode_responses=True)
 
+def get_redis():
+    return r
+
 
 def check_rate_limit(ip: str) -> bool:
     """

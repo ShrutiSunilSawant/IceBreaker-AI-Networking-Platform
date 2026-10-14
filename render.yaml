@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: icebreaker
+    runtime: python
+    rootDir: backend
+    buildCommand: |
+      pip install -r requirements.txt
+      cd ../frontend && npm install && npm run build
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENV
+        value: production
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRY_HOURS
+        value: "24"
+      - key: DATABASE_URL
+        sync: false
+      - key: QDRANT_HOST
+        sync: false
+      - key: QDRANT_PORT
+        value: "6333"
+      - key: QDRANT_COLLECTION
+        value: profiles
+      - key: REDIS_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: FROM_EMAIL
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: MIN_POOL_SIZE
+        value: "2"
+      - key: MAX_RETRIES
+        value: "2"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "30"
+      - key: EVENT_CREATE_INTERVAL_SECONDS
+        value: "3600"
