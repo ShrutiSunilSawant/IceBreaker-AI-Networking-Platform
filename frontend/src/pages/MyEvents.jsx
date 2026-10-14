@@ -100,8 +100,8 @@ export default function MyEvents() {
   const navigate = useNavigate()
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
-  const [expanded, setExpanded] = useState(null)
   const [prepOpen, setPrepOpen] = useState(null)
+  const [prepCache, setPrepCache] = useState({})
   const [unregistering, setUnregistering] = useState(null)
   const currentEventId = getStoredEventId()
 
@@ -120,10 +120,6 @@ export default function MyEvents() {
   const handleSelect = (eventId) => {
     saveEventId(eventId)
     navigate('/match')
-  }
-
-  const handleToggle = (eventId) => {
-    setExpanded(prev => prev === eventId ? null : eventId)
   }
 
   const handleUnregister = async (event) => {
@@ -199,7 +195,7 @@ export default function MyEvents() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {events.map((event, i) => {
             const isActive = event.id === currentEventId
-            const isExpanded = expanded === event.id
+            const isPrepOpen = prepOpen === event.id
             const isUnregistering = unregistering === event.id
             const status = getEventStatus(event.id)
             const isEnded = getEventStatus(event.date, event.duration_hours || 3) === 'ended'
@@ -221,11 +217,8 @@ export default function MyEvents() {
                   transition: 'opacity 0.2s, border-color 0.2s',
                 }}
               >
-                {/* Header row, always visible, click to expand */}
-                <div
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleToggle(event.id)}
-                >
+                {/* Header row */}
+                <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
@@ -261,78 +254,40 @@ export default function MyEvents() {
                             fontSize: '0.8rem', fontWeight: 600,
                             whiteSpace: 'nowrap', cursor: 'pointer',
                           }}
-                          onClick={(e) => { e.stopPropagation(); handleSelect(event.id) }}
+                          onClick={() => handleSelect(event.id)}
                         >
                           Find match
                         </div>
                       )}
                       <div
                         style={{
-                          background: prepOpen === event.id ? 'rgba(251,191,36,0.15)' : 'var(--surface-2)',
-                          color: prepOpen === event.id ? '#fbbf24' : 'var(--text-secondary)',
-                          border: `1px solid ${prepOpen === event.id ? 'rgba(251,191,36,0.3)' : 'var(--border)'}`,
+                          background: isPrepOpen ? 'var(--accent)' : 'var(--accent-dim)',
+                          color: isPrepOpen ? '#fff' : 'var(--accent)',
+                          border: '1px solid rgba(108,99,255,0.3)',
                           borderRadius: 6, padding: '6px 14px',
                           fontSize: '0.8rem', fontWeight: 600,
                           whiteSpace: 'nowrap', cursor: 'pointer',
                         }}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          const opening = prepOpen !== event.id
-                          setPrepOpen(opening ? event.id : null)
-                          if (opening) setExpanded(event.id)
-                        }}
+                        onClick={() => setPrepOpen(isPrepOpen ? null : event.id)}
                       >
                         ✦ AI Prep
                       </div>
-                      <span style={{
-                        fontSize: '0.85rem',
-                        color: 'var(--text-secondary)',
-                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.2s',
-                        display: 'inline-block',
-                      }}>
-                        ▾
-                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Expanded content */}
-                {isExpanded && (
+                {/* AI Prep panel */}
+                {isPrepOpen && (
                   <div className="fade-up" style={{ marginTop: 20, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-
-                    {/* Description */}
-                    {event.description && (
-                      <div style={{ marginBottom: 16 }}>
-                        <h4 style={{
-                          fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent)',
-                          textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8,
-                        }}>
-                          About this event
-                        </h4>
-                        <p style={{
-                          fontSize: '0.9rem', color: 'var(--text-secondary)',
-                          lineHeight: 1.7, whiteSpace: 'pre-line',
-                        }}>
-                          {event.description}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Prep guide — always shown when expanded, highlighted when opened via AI Prep button */}
-                    <EventPrep eventId={event.id} description={null} autoLoad={prepOpen === event.id} />
-
-                    {/* Unregister */}
+                    <EventPrep
+                      eventId={event.id}
+                      cachedPrep={prepCache[event.id]}
+                      onPrepLoaded={(data) => setPrepCache(prev => ({ ...prev, [event.id]: data }))}
+                    />
                     <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
                       <button
                         className="btn btn-ghost"
-                        style={{
-                          padding: '8px 14px',
-                          fontSize: '0.8rem',
-                          color: 'var(--error)',
-                          borderColor: 'rgba(248,113,113,0.2)',
-                          width: 'auto',
-                        }}
+                        style={{ padding: '8px 14px', fontSize: '0.8rem', color: 'var(--error)', borderColor: 'rgba(248,113,113,0.2)', width: 'auto' }}
                         disabled={isUnregistering}
                         onClick={() => handleUnregister(event)}
                       >
