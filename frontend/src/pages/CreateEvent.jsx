@@ -47,7 +47,8 @@ export default function CreateEvent() {
       // Save organizer token to localStorage
       localStorage.setItem(`organizer_token_${res.data.id}`, res.data.organizer_token)
     } catch (err) {
-      setError(err.response?.data?.detail || 'Could not create event.')
+      const detail = err.response?.data?.detail
+      setError(typeof detail === 'string' ? detail : 'Could not create event. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -267,6 +268,7 @@ export default function CreateEvent() {
             value={form.description}
             onChange={update('description')}
             required
+          />
         </div>
 
         <button
