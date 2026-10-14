@@ -29,7 +29,7 @@ export const getMyEvents = () => {
   const events = []
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i)
-    if (key && key.startsWith('token_')) {
+    if (key && key.startsWith('token_') && !key.startsWith('token_owner_')) {
       events.push(key.replace('token_', ''))
     }
   }

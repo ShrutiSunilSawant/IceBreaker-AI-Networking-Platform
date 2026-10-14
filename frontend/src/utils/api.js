@@ -6,11 +6,19 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  // Platform account token takes priority; fall back to event token
-  const platformToken = localStorage.getItem('platform_token')
   const eventId = localStorage.getItem('current_event_id')
   const eventToken = eventId ? localStorage.getItem(`token_${eventId}`) : null
-  const token = platformToken || eventToken
+
+  // Match and profile endpoints need the event-scoped token, not the platform token
+  const isEventEndpoint = config.url && (
+    config.url.startsWith('/matches') ||
+    config.url.startsWith('/profiles') ||
+    config.url.startsWith('/feedback')
+  )
+
+  const platformToken = localStorage.getItem('platform_token')
+  const token = isEventEndpoint ? (eventToken || platformToken) : (platformToken || eventToken)
+
   if (token && !config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`
   return config
 })
