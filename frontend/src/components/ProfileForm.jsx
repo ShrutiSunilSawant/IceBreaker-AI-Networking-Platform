@@ -46,7 +46,7 @@ export default function ProfileForm({ eventId, onSuccess }) {
       const status = err.response?.status
       const detail = err.response?.data?.detail || ''
       if (status === 403 || status === 401) {
-        setError('Session issue detected. Please refresh the page and try again.')
+        setError('Session issue detected. Please refresh the page and sign in again.')
       } else if (status === 422 && detail.toLowerCase().includes('moderation')) {
         setError(detail)
       } else {

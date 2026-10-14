@@ -31,7 +31,7 @@ export default function Match() {
       const status = err.response?.status
       const detail = err.response?.data?.detail || ''
       if (status === 403 || status === 401 || detail.toLowerCase().includes('not authorized')) {
-        setError('Your session has expired. Please go back and re-register for this event.')
+        setError('Your session has expired. Please go back to the event and sign in again.')
       } else if (status === 429) {
         setError('Too many requests. Please wait a moment and try again.')
       } else if (status === 404 && detail.toLowerCase().includes('profile')) {
