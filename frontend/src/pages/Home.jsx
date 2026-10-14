@@ -273,7 +273,7 @@ export default function Home() {
             {/* Step 3 */}
             <DemoStep number="3" title="Click any match to see your conversation starters">
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 16 }}>
-                Tap a match card to open 5 questions written specifically for both of you. Some questions are about your work. Others are about your hobbies. They are never mixed so you always have a natural way to open the conversation.
+                Tap a match card to see 5 conversation starters written just for the two of you. They are light, easy, and based on what you actually have in common. No deep questions, no awkward openers.
               </p>
               <div style={{ background: 'var(--bg)', border: '1px solid rgba(108,99,255,0.3)', borderRadius: 10, padding: '20px', boxShadow: '0 0 24px rgba(108,99,255,0.06)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, paddingBottom: 14, borderBottom: '1px solid var(--border)' }}>
@@ -436,7 +436,7 @@ const demoMatchRows = [
 ]
 
 const demoQuestions = [
-  'You are both working on inference optimization. What is the biggest performance gain you have found that most people overlook?',
-  'Your work touches on alignment for multi-agent systems. What does a failure look like in practice?',
-  'You both climb. What is a route that completely changed how you think about risk?',
+  'You both work in AI — what got you into it originally?',
+  'You are building developer tools. What is the most surprising thing users do with yours?',
+  'You both enjoy hiking — any trips planned this year?',
 ]
