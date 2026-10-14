@@ -423,7 +423,7 @@ const overviewCards = [
     title: 'Run a better networking event',
     desc: 'Create an event in seconds, share the link with your attendees, and let the platform handle all the matching automatically.',
     bullets: ['Create and manage events from a dashboard', 'Attendees self-register with no extra setup', 'Matching opens automatically once enough people join', 'Monitor attendance and activity in real time'],
-    cta: { label: 'Create an event', path: '/create-event' },
+    cta: { label: 'Create an event', path: '/signup' },
   },
 ]
 
