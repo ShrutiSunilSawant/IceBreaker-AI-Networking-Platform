@@ -28,12 +28,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router)
-app.include_router(users.router)
-app.include_router(events.router)
-app.include_router(profiles.router)
-app.include_router(matches.router)
-app.include_router(feedback.router)
+app.include_router(auth.router, prefix="/api")
+app.include_router(users.router, prefix="/api")
+app.include_router(events.router, prefix="/api")
+app.include_router(profiles.router, prefix="/api")
+app.include_router(matches.router, prefix="/api")
+app.include_router(feedback.router, prefix="/api")
 
 
 @app.on_event("startup")
@@ -42,6 +42,7 @@ async def startup():
 
 
 @app.get("/health")
+@app.get("/api/health")
 async def health():
     return {"status": "ok"}
 
