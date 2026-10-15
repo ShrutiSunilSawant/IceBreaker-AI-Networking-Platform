@@ -27,7 +27,7 @@ export default function ProfileForm({ eventId, onSuccess }) {
   const validate = () => {
     if (!form.consent) { setError('You must agree to the terms to continue.'); return false }
     if (!form.name || !form.email || !form.role || !form.what_you_do || !form.looking_for) { setError('Please fill in all required fields.'); return false }
-    if (form.what_you_do.length < 20) { setError('Please describe what you work on in at least 20 characters.'); return false }
+    if (form.what_you_do.length < 200) { setError('Please describe what you work on in at least 200 characters for better matches.'); return false }
     return true
   }
 
@@ -132,7 +132,9 @@ export default function ProfileForm({ eventId, onSuccess }) {
           value={form.what_you_do}
           onChange={update('what_you_do')}
         />
-        <span className="hint">{form.what_you_do.length} / 500 characters. Minimum 20.</span>
+        <span className="hint" style={{ color: form.what_you_do.length < 100 ? 'var(--error)' : 'var(--text-secondary)' }}>
+          {form.what_you_do.length} / 500 characters. Minimum 200 for better matches.
+        </span>
       </div>
 
       <div className="field">
