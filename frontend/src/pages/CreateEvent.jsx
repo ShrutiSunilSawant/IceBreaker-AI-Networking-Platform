@@ -8,10 +8,14 @@ export default function CreateEvent() {
   const stored = localStorage.getItem('platform_user')
   const platformEmail = stored ? JSON.parse(stored).email : ''
 
+  const now = new Date()
+  const todayDate = now.toISOString().split('T')[0]
+  const currentTime = now.toTimeString().slice(0, 5)
+
   const [form, setForm] = useState({
     name: '',
-    eventDate: '',
-    eventTime: '',
+    eventDate: todayDate,
+    eventTime: currentTime,
     location: '',
     description: '',
     duration_hours: 3,
