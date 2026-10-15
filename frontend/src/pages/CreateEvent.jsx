@@ -27,8 +27,15 @@ export default function CreateEvent() {
 
   const handleSubmit = async () => {
     setError(null)
-    if (!form.name || !form.eventDate || !form.eventTime || !form.organizer_email || !form.location || !form.description) {
-      setError('All fields are required.')
+    const missing = []
+    if (!form.name) missing.push('Event name')
+    if (!form.eventDate) missing.push('Date')
+    if (!form.eventTime) missing.push('Time')
+    if (!form.location) missing.push('Location')
+    if (!form.description) missing.push('Description')
+    if (!form.organizer_email) missing.push('Organizer email')
+    if (missing.length) {
+      setError(`Please fill in: ${missing.join(', ')}`)
       return
     }
     const combinedDate = `${form.eventDate}T${form.eventTime}`
@@ -194,6 +201,8 @@ export default function CreateEvent() {
               type="date"
               value={form.eventDate}
               onChange={update('eventDate')}
+              min={new Date().toISOString().split('T')[0]}
+              autoComplete="off"
               style={{ colorScheme: 'dark' }}
             />
           </div>
@@ -203,6 +212,7 @@ export default function CreateEvent() {
               type="time"
               value={form.eventTime}
               onChange={update('eventTime')}
+              autoComplete="off"
               style={{ colorScheme: 'dark' }}
             />
           </div>
