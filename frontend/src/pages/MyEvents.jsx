@@ -202,8 +202,8 @@ export default function MyEvents() {
         {/* Events I Created */}
         {!loading && createdEvents.length > 0 && (
           <div style={{ marginBottom: 40 }}>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 16, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', fontSize: '0.8rem' }}>
-              Events I Created
+            <h2 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: 16, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Events Created
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {createdEvents.map((event, i) => {
@@ -244,7 +244,7 @@ export default function MyEvents() {
         {/* Events I'm Attending */}
         {!loading && attendingEvents.length > 0 && (
           <h2 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: 16, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            Events I'm Attending
+            Events Attending
           </h2>
         )}
 
