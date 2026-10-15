@@ -27,7 +27,7 @@ class EventCreate(BaseModel):
     location: Optional[str] = None
     description: Optional[str] = None
     duration_hours: Optional[float] = 3.0
-    min_pool_size: Optional[int] = 10
+    min_pool_size: Optional[int] = 2
 
 
 class EventResponse(BaseModel):
@@ -153,7 +153,7 @@ async def create_event(payload: EventCreate, request: Request, db: Session = Dep
         location=payload.location,
         description=payload.description,
         duration_hours=payload.duration_hours or 3.0,
-        min_pool_size=payload.min_pool_size or 10,
+        min_pool_size=payload.min_pool_size or 2,
         active=True,
         organizer_email=payload.organizer_email,
         organizer_token=organizer_token,

@@ -104,6 +104,7 @@ export default function MyEvents() {
   const [prepOpen, setPrepOpen] = useState(null)
   const [prepCache, setPrepCache] = useState({})
   const [unregistering, setUnregistering] = useState(null)
+  const [unregisterSuccess, setUnregisterSuccess] = useState(null)
   const currentEventId = getStoredEventId()
 
   // keep backward compat
@@ -113,7 +114,7 @@ export default function MyEvents() {
     const attendingIds = getMyEvents()
     const createdIds = getCreatedEvents()
     const allIds = [...new Set([...attendingIds, ...createdIds])]
-    if (allIds.length === 0) { navigate('/events'); return }
+    if (allIds.length === 0) { setLoading(false); return }
     Promise.all(allIds.map(id => getEvent(id).then(r => r.data).catch(() => null)))
       .then(results => {
         const byId = {}
@@ -143,8 +144,10 @@ export default function MyEvents() {
     try {
       await unregisterFromEvent(userId, event.id)
       removeEventFromStorage(event.id)
-      setEvents(prev => prev.filter(e => e.id !== event.id))
+      setAttendingEvents(prev => prev.filter(e => e.id !== event.id))
       if (prepOpen === event.id) setPrepOpen(null)
+      setUnregisterSuccess(`You have been unregistered from "${event.name}".`)
+      setTimeout(() => setUnregisterSuccess(null), 4000)
     } catch (err) {
       const detail = err.response?.data?.detail
       alert(detail || 'Could not unregister. Please try again.')
@@ -164,6 +167,16 @@ export default function MyEvents() {
             Home
           </button>
         </div>
+
+        {unregisterSuccess && (
+          <div style={{
+            background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)',
+            borderRadius: 'var(--radius-sm)', padding: '12px 16px',
+            color: '#4ade80', fontSize: '0.9rem', marginBottom: 16,
+          }} className="fade-up">
+            {unregisterSuccess}
+          </div>
+        )}
 
         <div className="fade-up" style={{ marginBottom: 40 }}>
           <h1 style={{ fontSize: '2rem', marginBottom: 8 }}>My Events</h1>

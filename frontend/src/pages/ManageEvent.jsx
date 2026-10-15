@@ -25,7 +25,7 @@ export default function ManageEvent() {
   const [done, setDone] = useState(null)
 
   useEffect(() => {
-    if (!token) { navigate('/events'); return }
+    if (!token) { setError('Organizer token not found. Please use the link from your event confirmation, or check My Events.'); setLoading(false); return }
     Promise.all([
       getEvent(eventId),
       api.get(`/events/${eventId}/stats`),
