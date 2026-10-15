@@ -66,6 +66,14 @@ export default function Navbar() {
               onClick={e => { e.preventDefault(); document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' }) }}>
               Features
             </a>
+            <a href="/#overview" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textDecoration: 'none' }}
+              onClick={e => { e.preventDefault(); document.getElementById('overview')?.scrollIntoView({ behavior: 'smooth' }) }}>
+              Product overview
+            </a>
+            <a href="/#demo" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', textDecoration: 'none' }}
+              onClick={e => { e.preventDefault(); document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' }) }}>
+              Demo
+            </a>
           </div>
         )}
 
