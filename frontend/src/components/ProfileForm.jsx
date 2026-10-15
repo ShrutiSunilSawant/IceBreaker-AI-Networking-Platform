@@ -3,9 +3,12 @@ import { submitProfile, getToken } from '../utils/api'
 import { saveToken, saveUserId, saveEventId } from '../utils/auth'
 
 export default function ProfileForm({ eventId, onSuccess }) {
+  const stored = localStorage.getItem('platform_user')
+  const platformUser = stored ? JSON.parse(stored) : null
+
   const [form, setForm] = useState({
-    name: '',
-    email: '',
+    name: platformUser?.display_name || '',
+    email: platformUser?.email || '',
     role: '',
     company: '',
     what_you_do: '',
