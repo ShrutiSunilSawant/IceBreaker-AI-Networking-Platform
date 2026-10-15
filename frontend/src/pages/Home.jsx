@@ -66,32 +66,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Hero demo cards */}
-        <div style={{ position: 'relative', marginTop: 72, display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-          {heroCards.map((c, i) => (
-            <div key={i} className="fade-up" style={{
-              background: 'var(--surface)', border: '1px solid var(--border)',
-              borderRadius: 14, padding: '20px 24px', maxWidth: 260, textAlign: 'left',
-              animationDelay: `${i * 0.12}s`,
-              boxShadow: i === 1 ? '0 0 40px rgba(108,99,255,0.12)' : 'none',
-              borderColor: i === 1 ? 'rgba(108,99,255,0.3)' : undefined,
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{c.name}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{c.role}</div>
-                </div>
-                <div style={{
-                  background: i === 1 ? 'rgba(108,99,255,0.15)' : 'rgba(255,255,255,0.05)',
-                  color: i === 1 ? 'var(--accent)' : 'var(--text-secondary)',
-                  borderRadius: 6, padding: '3px 9px', fontSize: '0.78rem', fontWeight: 600,
-                }}>{c.pct}% match</div>
-              </div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 10 }}>{c.desc}</p>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 500 }}>5 conversation starters ready</div>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* How It Works */}
