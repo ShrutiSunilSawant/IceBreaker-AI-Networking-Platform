@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { getEvent } from '../utils/api'
-import axios from 'axios'
+import api from '../utils/api'
 
 function formatDate(iso) {
   const d = new Date(iso)
@@ -28,7 +28,7 @@ export default function ManageEvent() {
     if (!token) { navigate('/events'); return }
     Promise.all([
       getEvent(eventId),
-      axios.get(`/api/events/${eventId}/stats`),
+      api.get(`/events/${eventId}/stats`),
     ])
       .then(([eventRes, statsRes]) => {
         setEvent(eventRes.data)
@@ -43,7 +43,7 @@ export default function ManageEvent() {
     if (!confirmed) return
     setActionLoading('end')
     try {
-      await axios.post(`/api/events/${eventId}/end?organizer_token=${token}`)
+      await api.post(`/events/${eventId}/end?organizer_token=${token}`)
       setDone('ended')
     } catch (err) {
       const s = err.response?.status
@@ -58,7 +58,7 @@ export default function ManageEvent() {
     if (!confirmed) return
     setActionLoading('cancel')
     try {
-      await axios.delete(`/api/events/${eventId}?organizer_token=${token}`)
+      await api.delete(`/events/${eventId}?organizer_token=${token}`)
       setDone('cancelled')
     } catch (err) {
       const s = err.response?.status

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../utils/api'
 
 export default function EventPrep({ eventId, cachedPrep, onPrepLoaded }) {
   const [prep, setPrep] = useState(cachedPrep || null)
@@ -14,7 +14,7 @@ export default function EventPrep({ eventId, cachedPrep, onPrepLoaded }) {
     setLoading(true)
     setError(null)
     try {
-      const res = await axios.get(`/api/events/${eventId}/prep`, { timeout: 15000 })
+      const res = await api.get(`/events/${eventId}/prep`, { timeout: 15000 })
       setPrep(res.data.prep)
       onPrepLoaded?.(res.data.prep)
     } catch {
