@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createEvent } from '../utils/api'
 import Navbar from '../components/Navbar'
@@ -8,14 +8,10 @@ export default function CreateEvent() {
   const stored = localStorage.getItem('platform_user')
   const platformEmail = stored ? JSON.parse(stored).email : ''
 
-  const now = new Date()
-  const todayDate = now.toISOString().split('T')[0]
-  const currentTime = now.toTimeString().slice(0, 5)
-
   const [form, setForm] = useState({
     name: '',
-    eventDate: todayDate,
-    eventTime: currentTime,
+    eventDate: '',
+    eventTime: '',
     location: '',
     description: '',
     duration_hours: 3,
@@ -25,16 +21,21 @@ export default function CreateEvent() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [created, setCreated] = useState(null)
+  const dateRef = useRef(null)
+  const timeRef = useRef(null)
 
   const update = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   const handleSubmit = async () => {
     setError(null)
+    // Read from DOM refs so browser-autofilled values are captured
+    const eventDate = dateRef.current?.value || form.eventDate
+    const eventTime = timeRef.current?.value || form.eventTime
     const missing = []
     if (!form.name) missing.push('Event name')
-    if (!form.eventDate) missing.push('Date')
-    if (!form.eventTime) missing.push('Time')
+    if (!eventDate) missing.push('Date')
+    if (!eventTime) missing.push('Time')
     if (!form.location) missing.push('Location')
     if (!form.description) missing.push('Description')
     if (!form.organizer_email) missing.push('Organizer email')
@@ -42,7 +43,7 @@ export default function CreateEvent() {
       setError(`Please fill in: ${missing.join(', ')}`)
       return
     }
-    const combinedDate = `${form.eventDate}T${form.eventTime}`
+    const combinedDate = `${eventDate}T${eventTime}`
     setLoading(true)
     try {
       const res = await createEvent({
@@ -202,6 +203,7 @@ export default function CreateEvent() {
           <div className="field">
             <label>Date *</label>
             <input
+              ref={dateRef}
               type="date"
               value={form.eventDate}
               onChange={update('eventDate')}
@@ -213,6 +215,7 @@ export default function CreateEvent() {
           <div className="field">
             <label>Time *</label>
             <input
+              ref={timeRef}
               type="time"
               value={form.eventTime}
               onChange={update('eventTime')}
