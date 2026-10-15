@@ -36,6 +36,17 @@ export const getMyEvents = () => {
   return events
 }
 
+export const getCreatedEvents = () => {
+  const events = []
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+    if (key && key.startsWith('organizer_token_')) {
+      events.push(key.replace('organizer_token_', ''))
+    }
+  }
+  return events
+}
+
 export const removeEventFromStorage = (eventId) => {
   localStorage.removeItem(`token_${eventId}`)
   localStorage.removeItem(`token_owner_${eventId}`)

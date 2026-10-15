@@ -201,7 +201,7 @@ export default function ProfileForm({ eventId, onSuccess }) {
               <span className="loading-dot" />
               <span className="loading-dot" />
             </span>
-          ) : 'Find my match'}
+          ) : 'Find connections'}
         </button>
       </div>
     </div>

@@ -120,7 +120,7 @@ export default function Navbar() {
                     }} onMouseLeave={() => setMenuOpen(false)}>
                       <DropItem onClick={() => { setMenuOpen(false); navigate('/events') }}>🎟 Browse Events</DropItem>
                       <DropItem onClick={() => { setMenuOpen(false); navigate('/create-event') }}>＋ Create Event</DropItem>
-                      <DropItem onClick={() => { setMenuOpen(false); navigate('/my-events') }}>📋 My Events</DropItem>
+                      <DropItem onClick={() => { setMenuOpen(false); navigate('/my-events') }}>📋 My Events (attending & created)</DropItem>
                       <DropItem onClick={() => { setMenuOpen(false); navigate('/settings') }}>⚙ Settings</DropItem>
                       <div style={{ height: 1, background: 'var(--border)', margin: '6px 0' }} />
                       <DropItem onClick={() => { setMenuOpen(false); handleSignOut() }} danger>↩ Sign out</DropItem>

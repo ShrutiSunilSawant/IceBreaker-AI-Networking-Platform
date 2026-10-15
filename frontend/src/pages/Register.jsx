@@ -85,7 +85,7 @@ export default function Register() {
                 style={{ width: 'auto', padding: '12px 28px' }}
                 onClick={() => { saveEventId(eventId); navigate('/match') }}
               >
-                Find my match
+                Find connections
               </button>
               <button
                 className="btn btn-ghost"

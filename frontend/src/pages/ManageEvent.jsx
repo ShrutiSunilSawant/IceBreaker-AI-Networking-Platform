@@ -192,32 +192,35 @@ export default function ManageEvent() {
               background: 'rgba(248,113,113,0.04)',
             }}>
               <h3 style={{ fontSize: '1rem', marginBottom: 8, color: 'var(--text)' }}>Event actions</h3>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: 20 }}>
-                Ending the event stops new matches but keeps all data. Cancelling removes the event entirely.
-              </p>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <button
-                  className="btn btn-ghost"
-                  style={{
-                    width: 'auto', padding: '12px 24px',
-                    color: '#fbbf24', borderColor: 'rgba(251,191,36,0.3)',
-                  }}
-                  disabled={actionLoading !== null}
-                  onClick={handleEnd}
-                >
-                  {actionLoading === 'end' ? 'Ending...' : 'End event'}
-                </button>
-                <button
-                  className="btn btn-ghost"
-                  style={{
-                    width: 'auto', padding: '12px 24px',
-                    color: 'var(--error)', borderColor: 'rgba(248,113,113,0.3)',
-                  }}
-                  disabled={actionLoading !== null}
-                  onClick={handleCancel}
-                >
-                  {actionLoading === 'cancel' ? 'Cancelling...' : 'Cancel event'}
-                </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, padding: '12px 0', borderBottom: '1px solid rgba(248,113,113,0.1)' }}>
+                  <div>
+                    <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: 2 }}>End event</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Stops new connections but keeps all data.</p>
+                  </div>
+                  <button
+                    className="btn btn-ghost"
+                    style={{ width: 'auto', padding: '10px 20px', color: '#fbbf24', borderColor: 'rgba(251,191,36,0.3)' }}
+                    disabled={actionLoading !== null}
+                    onClick={handleEnd}
+                  >
+                    {actionLoading === 'end' ? 'Ending...' : 'End event'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, paddingTop: 4 }}>
+                  <div>
+                    <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: 2, color: 'var(--error)' }}>Delete event</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Permanently removes the event and all its data. Cannot be undone.</p>
+                  </div>
+                  <button
+                    className="btn btn-ghost"
+                    style={{ width: 'auto', padding: '10px 20px', color: 'var(--error)', borderColor: 'rgba(248,113,113,0.3)' }}
+                    disabled={actionLoading !== null}
+                    onClick={handleCancel}
+                  >
+                    {actionLoading === 'cancel' ? 'Deleting...' : 'Delete event'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
