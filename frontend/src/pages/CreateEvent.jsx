@@ -238,13 +238,14 @@ export default function CreateEvent() {
         </div>
 
         <div className="field">
-          <label>Location *</label>
+          <label>Address *</label>
           <input
             type="text"
-            placeholder="San Francisco, CA"
+            placeholder="123 Main St, San Francisco, CA 94105"
             value={form.location}
             onChange={update('location')}
           />
+          <span className="hint">Full address so attendees can find the venue.</span>
         </div>
 
         <div className="field">
