@@ -202,17 +202,38 @@ function EventModal({ event, onClose, onRegister }) {
           </p>
         )}
 
-        <button
-          className="btn btn-primary"
-          style={{ fontSize: '1rem', padding: '14px' }}
-          onClick={() => onRegister(event.id)}
-        >
-          Register for this event
-        </button>
+        {isOrganizer(event.id) ? (
+          <button
+            className="btn btn-ghost"
+            style={{ fontSize: '1rem', padding: '14px' }}
+            onClick={() => onRegister(event.id, true)}
+          >
+            Manage event →
+          </button>
+        ) : isAttending(event.id) ? (
+          <div style={{
+            background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.25)',
+            borderRadius: 'var(--radius-sm)', padding: '14px', textAlign: 'center',
+            color: '#4ade80', fontWeight: 600, fontSize: '0.95rem',
+          }}>
+            You are registered for this event ✓
+          </div>
+        ) : (
+          <button
+            className="btn btn-primary"
+            style={{ fontSize: '1rem', padding: '14px' }}
+            onClick={() => onRegister(event.id)}
+          >
+            Register for this event
+          </button>
+        )}
       </div>
     </div>
   )
 }
+
+const isOrganizer = (eventId) => !!localStorage.getItem(`organizer_token_${eventId}`)
+const isAttending = (eventId) => !!localStorage.getItem(`token_${eventId}`)
 
 export default function Events() {
   const navigate = useNavigate()
@@ -235,9 +256,14 @@ export default function Events() {
       .finally(() => setLoading(false))
   }, [])
 
-  const handleRegister = (eventId) => {
+  const handleRegister = (eventId, isManage = false) => {
     setSelected(null)
-    navigate(`/register/${eventId}`)
+    if (isManage) {
+      const token = localStorage.getItem(`organizer_token_${eventId}`)
+      navigate(`/manage-event/${eventId}${token ? `?token=${token}` : ''}`)
+    } else {
+      navigate(`/register/${eventId}`)
+    }
   }
 
   return (
@@ -356,16 +382,39 @@ export default function Events() {
                   <AttendeeCount eventId={event.id} minPoolSize={event.min_pool_size} />
                 </div>
                 {!isEnded && (
-                  <div style={{
-                    background: status === 'ongoing' ? 'rgba(74,222,128,0.1)' : 'var(--accent-dim)',
-                    color: status === 'ongoing' ? '#4ade80' : 'var(--accent)',
-                    border: `1px solid ${status === 'ongoing' ? 'rgba(74,222,128,0.3)' : 'rgba(108,99,255,0.3)'}`,
-                    borderRadius: 6, padding: '6px 14px',
-                    fontSize: '0.8rem', fontWeight: 600,
-                    whiteSpace: 'nowrap', flexShrink: 0,
-                  }}>
-                    Attend this event
-                  </div>
+                  isOrganizer(event.id) ? (
+                    <div style={{
+                      background: 'var(--surface-2)', color: 'var(--text-secondary)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 6, padding: '6px 14px',
+                      fontSize: '0.8rem', fontWeight: 600,
+                      whiteSpace: 'nowrap', flexShrink: 0,
+                      cursor: 'pointer',
+                    }} onClick={(e) => { e.stopPropagation(); navigate(`/manage-event/${event.id}`) }}>
+                      Your event →
+                    </div>
+                  ) : isAttending(event.id) ? (
+                    <div style={{
+                      background: 'rgba(74,222,128,0.08)', color: '#4ade80',
+                      border: '1px solid rgba(74,222,128,0.25)',
+                      borderRadius: 6, padding: '6px 14px',
+                      fontSize: '0.8rem', fontWeight: 600,
+                      whiteSpace: 'nowrap', flexShrink: 0,
+                    }}>
+                      Registered ✓
+                    </div>
+                  ) : (
+                    <div style={{
+                      background: status === 'ongoing' ? 'rgba(74,222,128,0.1)' : 'var(--accent-dim)',
+                      color: status === 'ongoing' ? '#4ade80' : 'var(--accent)',
+                      border: `1px solid ${status === 'ongoing' ? 'rgba(74,222,128,0.3)' : 'rgba(108,99,255,0.3)'}`,
+                      borderRadius: 6, padding: '6px 14px',
+                      fontSize: '0.8rem', fontWeight: 600,
+                      whiteSpace: 'nowrap', flexShrink: 0,
+                    }}>
+                      Attend this event
+                    </div>
+                  )
                 )}
               </div>
             </div>
