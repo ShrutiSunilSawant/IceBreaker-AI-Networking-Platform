@@ -62,8 +62,12 @@ def make_organizer_token(email: str, event_id: str) -> str:
 
 @router.get("/", response_model=list[EventResponse])
 async def list_events(db: Session = Depends(get_db)):
+    from datetime import timedelta
+    now = datetime.utcnow()
     events = db.query(Event).filter_by(active=True).order_by(Event.date.asc()).all()
-    return [to_response(e) for e in events]
+    # Hide events that ended more than 1 hour ago
+    visible = [e for e in events if e.date + timedelta(hours=(e.duration_hours or 3) + 1) > now]
+    return [to_response(e) for e in visible]
 
 
 @router.get("/{event_id}", response_model=EventResponse)
