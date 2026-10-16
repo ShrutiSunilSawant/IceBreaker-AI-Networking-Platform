@@ -285,13 +285,19 @@ export default function CreateEvent() {
           style={{ fontSize: '1.05rem', padding: '16px', marginTop: 8 }}
         >
           {loading ? (
-            <span style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+            <span style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
               <span className="loading-dot" />
               <span className="loading-dot" />
               <span className="loading-dot" />
+              <span style={{ marginLeft: 4, fontSize: '0.95rem' }}>Setting up your event…</span>
             </span>
           ) : 'Create event'}
         </button>
+        {loading && (
+          <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.82rem', marginTop: 10 }}>
+            This takes a few seconds — we're reviewing your event details.
+          </p>
+        )}
       </div>
       </div>
     </div>
