@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getEvent, unregisterFromEvent } from '../utils/api'
+import { getEvent, unregisterFromEvent, getEventStats } from '../utils/api'
 import { getMyEvents, getCreatedEvents, getStoredEventId, saveEventId, getStoredUserId, removeEventFromStorage } from '../utils/auth'
 import EventPrep from '../components/EventPrep'
 
@@ -99,15 +99,14 @@ export default function MyEvents() {
   const navigate = useNavigate()
   const [attendingEvents, setAttendingEvents] = useState([])
   const [createdEvents, setCreatedEvents] = useState([])
+  const [pastEvents, setPastEvents] = useState({ attending: [], created: [] })
+  const [pastStats, setPastStats] = useState({})
   const [loading, setLoading] = useState(true)
   const [prepOpen, setPrepOpen] = useState(null)
   const [prepCache, setPrepCache] = useState({})
   const [unregistering, setUnregistering] = useState(null)
   const [unregisterSuccess, setUnregisterSuccess] = useState(null)
   const currentEventId = getStoredEventId()
-
-  // keep backward compat
-  const events = attendingEvents
 
   useEffect(() => {
     const attendingIds = getMyEvents()
@@ -118,12 +117,30 @@ export default function MyEvents() {
       .then(results => {
         const byId = {}
         results.filter(Boolean).forEach(e => { byId[e.id] = e })
-        const attending = attendingIds.map(id => byId[id]).filter(Boolean)
-        const created = createdIds.map(id => byId[id]).filter(Boolean)
+
+        const isOver = (e) => getEventStatus(e.date, e.end_time, e.duration_hours || 3) === 'ended'
+
+        const attending = attendingIds.map(id => byId[id]).filter(Boolean).filter(e => !isOver(e))
+        const created = createdIds.map(id => byId[id]).filter(Boolean).filter(e => !isOver(e))
+        const pastAttending = attendingIds.map(id => byId[id]).filter(Boolean).filter(isOver)
+        const pastCreated = createdIds.map(id => byId[id]).filter(Boolean).filter(isOver)
+
         attending.sort((a, b) => new Date(a.date) - new Date(b.date))
         created.sort((a, b) => new Date(a.date) - new Date(b.date))
+        pastAttending.sort((a, b) => new Date(b.date) - new Date(a.date))
+        pastCreated.sort((a, b) => new Date(b.date) - new Date(a.date))
+
         setAttendingEvents(attending)
         setCreatedEvents(created)
+        setPastEvents({ attending: pastAttending, created: pastCreated })
+
+        // Fetch stats for all past events
+        const allPast = [...new Map([...pastAttending, ...pastCreated].map(e => [e.id, e])).values()]
+        allPast.forEach(e => {
+          getEventStats(e.id).then(r => {
+            setPastStats(prev => ({ ...prev, [e.id]: r.data }))
+          }).catch(() => {})
+        })
       })
       .finally(() => setLoading(false))
   }, [])
@@ -201,7 +218,7 @@ export default function MyEvents() {
           </div>
         )}
 
-        {!loading && attendingEvents.length === 0 && createdEvents.length === 0 && (
+        {!loading && attendingEvents.length === 0 && createdEvents.length === 0 && pastEvents.attending.length === 0 && pastEvents.created.length === 0 && (
           <div className="card" style={{ textAlign: 'center', padding: '48px 32px' }}>
             <p style={{ color: 'var(--text-secondary)', marginBottom: 20 }}>
               You are not registered for any events.
@@ -379,6 +396,78 @@ export default function MyEvents() {
             )
           })}
         </div>
+
+        {/* Past Events — Created */}
+        {!loading && pastEvents.created.length > 0 && (
+          <div style={{ marginTop: 48 }}>
+            <h2 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: 16, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Past Events Created
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {pastEvents.created.map((event, i) => {
+                const stats = pastStats[event.id]
+                return (
+                  <div key={event.id} className="card fade-up" style={{ animationDelay: `${i * 0.08}s`, opacity: 0.7 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
+                          <h2 style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>{event.name}</h2>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 20, padding: '3px 10px' }}>Event ended</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{formatDate(event.date)}</span>
+                          {event.location && <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{event.location}</span>}
+                        </div>
+                      </div>
+                      {stats && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 14px', flexShrink: 0 }}>
+                          <span style={{ fontSize: '1.25rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--text)' }}>{stats.registered}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{stats.registered === 1 ? 'attendee' : 'attendees'}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Past Events — Attended */}
+        {!loading && pastEvents.attending.length > 0 && (
+          <div style={{ marginTop: 48 }}>
+            <h2 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: 16, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Past Events Attended
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {pastEvents.attending.map((event, i) => {
+                const stats = pastStats[event.id]
+                return (
+                  <div key={event.id} className="card fade-up" style={{ animationDelay: `${i * 0.08}s`, opacity: 0.7 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
+                          <h2 style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>{event.name}</h2>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 20, padding: '3px 10px' }}>Event ended</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{formatDate(event.date)}</span>
+                          {event.location && <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{event.location}</span>}
+                        </div>
+                      </div>
+                      {stats && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 14px', flexShrink: 0 }}>
+                          <span style={{ fontSize: '1.25rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--text)' }}>{stats.registered}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{stats.registered === 1 ? 'attendee' : 'attendees'}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
