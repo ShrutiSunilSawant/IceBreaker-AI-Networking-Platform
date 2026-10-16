@@ -6,7 +6,9 @@ import Navbar from '../components/Navbar'
 export default function CreateEvent() {
   const navigate = useNavigate()
   const stored = localStorage.getItem('platform_user')
-  const platformEmail = stored ? JSON.parse(stored).email : ''
+  const platformUser = stored ? JSON.parse(stored) : null
+  const platformEmail = platformUser?.email || ''
+  const platformName = platformUser?.display_name || ''
 
   const [form, setForm] = useState({
     name: '',
@@ -15,6 +17,7 @@ export default function CreateEvent() {
     endTime: '',
     location: '',
     description: '',
+    organizer_name: platformName,
     organizer_email: platformEmail,
   })
   const [loading, setLoading] = useState(false)
@@ -37,9 +40,10 @@ export default function CreateEvent() {
     if (!eventDate) missing.push('Date')
     if (!startTime) missing.push('Start time')
     if (!endTime) missing.push('End time')
-    if (!form.location) missing.push('Location')
+    if (!form.location) missing.push('Address')
     if (!form.description) missing.push('Description')
-    if (!form.organizer_email) missing.push('Organizer email')
+    if (!form.organizer_name) missing.push('Your name')
+    if (!form.organizer_email) missing.push('Your email')
     if (missing.length) { setError(`Please fill in: ${missing.join(', ')}`); return }
     if (endTime <= startTime) { setError('End time must be after start time.'); return }
     setLoading(true)
@@ -84,7 +88,12 @@ export default function CreateEvent() {
               Event created
             </div>
 
-            <h2 style={{ fontSize: '1.5rem', marginBottom: 8 }}>{created.name}</h2>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: 6 }}>{created.name}</h2>
+            {form.organizer_name && (
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 4 }}>
+                Organized by <strong style={{ color: 'var(--text)' }}>{form.organizer_name}</strong>
+              </p>
+            )}
             <p style={{ color: 'var(--text-secondary)', marginBottom: 28 }}>
               Your event is live. Share the link below with attendees.
             </p>
@@ -185,15 +194,25 @@ export default function CreateEvent() {
           />
         </div>
 
-        <div className="field">
-          <label>Your email *</label>
-          <input
-            type="email"
-            placeholder="organizer@company.com"
-            value={form.organizer_email}
-            onChange={update('organizer_email')}
-          />
-          <span className="hint">Used to identify you as the organizer. Not shown publicly.</span>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
+          <div className="field">
+            <label>Your name *</label>
+            <input
+              type="text"
+              placeholder="Jane Smith"
+              value={form.organizer_name}
+              onChange={update('organizer_name')}
+            />
+          </div>
+          <div className="field">
+            <label>Your email *</label>
+            <input
+              type="email"
+              placeholder="organizer@company.com"
+              value={form.organizer_email}
+              onChange={update('organizer_email')}
+            />
+          </div>
         </div>
 
         <div className="field">
