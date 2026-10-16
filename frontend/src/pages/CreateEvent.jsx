@@ -11,7 +11,8 @@ export default function CreateEvent() {
   const [form, setForm] = useState({
     name: '',
     eventDate: '',
-    eventTime: '',
+    startTime: '',
+    endTime: '',
     location: '',
     description: '',
     organizer_email: platformEmail,
@@ -20,7 +21,8 @@ export default function CreateEvent() {
   const [error, setError] = useState(null)
   const [created, setCreated] = useState(null)
   const dateRef = useRef(null)
-  const timeRef = useRef(null)
+  const startTimeRef = useRef(null)
+  const endTimeRef = useRef(null)
 
   const update = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }))
@@ -28,20 +30,24 @@ export default function CreateEvent() {
   const handleSubmit = async () => {
     setError(null)
     const eventDate = dateRef.current?.value || form.eventDate
-    const eventTime = timeRef.current?.value || form.eventTime
+    const startTime = startTimeRef.current?.value || form.startTime
+    const endTime = endTimeRef.current?.value || form.endTime
     const missing = []
     if (!form.name) missing.push('Event name')
     if (!eventDate) missing.push('Date')
-    if (!eventTime) missing.push('Time')
+    if (!startTime) missing.push('Start time')
+    if (!endTime) missing.push('End time')
     if (!form.location) missing.push('Location')
     if (!form.description) missing.push('Description')
     if (!form.organizer_email) missing.push('Organizer email')
     if (missing.length) { setError(`Please fill in: ${missing.join(', ')}`); return }
+    if (endTime <= startTime) { setError('End time must be after start time.'); return }
     setLoading(true)
     try {
       const res = await createEvent({
         name: form.name,
-        date: `${eventDate}T${eventTime}`,
+        date: `${eventDate}T${startTime}`,
+        end_time: `${eventDate}T${endTime}`,
         location: form.location,
         description: form.description,
         organizer_email: form.organizer_email,
@@ -190,26 +196,38 @@ export default function CreateEvent() {
           <span className="hint">Used to identify you as the organizer. Not shown publicly.</span>
         </div>
 
+        <div className="field">
+          <label>Date *</label>
+          <input
+            ref={dateRef}
+            type="date"
+            value={form.eventDate}
+            onChange={update('eventDate')}
+            min={new Date().toISOString().split('T')[0]}
+            autoComplete="off"
+            style={{ colorScheme: 'dark' }}
+          />
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
           <div className="field">
-            <label>Date *</label>
+            <label>Start time *</label>
             <input
-              ref={dateRef}
-              type="date"
-              value={form.eventDate}
-              onChange={update('eventDate')}
-              min={new Date().toISOString().split('T')[0]}
+              ref={startTimeRef}
+              type="time"
+              value={form.startTime}
+              onChange={update('startTime')}
               autoComplete="off"
               style={{ colorScheme: 'dark' }}
             />
           </div>
           <div className="field">
-            <label>Time *</label>
+            <label>End time *</label>
             <input
-              ref={timeRef}
+              ref={endTimeRef}
               type="time"
-              value={form.eventTime}
-              onChange={update('eventTime')}
+              value={form.endTime}
+              onChange={update('endTime')}
               autoComplete="off"
               style={{ colorScheme: 'dark' }}
             />
