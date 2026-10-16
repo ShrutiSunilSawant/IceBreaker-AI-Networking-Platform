@@ -266,6 +266,7 @@ export default function MyEvents() {
             const isActive = event.id === currentEventId
             const isPrepOpen = prepOpen === event.id
             const isUnregistering = unregistering === event.id
+            const isCancelled = event.cancelled
             const isEnded = getEventStatus(event.date, event.end_time, event.duration_hours || 3) === 'ended'
 
 
