@@ -218,8 +218,9 @@ export default function CreateEvent() {
               type="time"
               value={form.startTime}
               onChange={update('startTime')}
+              onClick={(e) => e.target.showPicker?.()}
               autoComplete="off"
-              style={{ colorScheme: 'dark' }}
+              style={{ colorScheme: 'dark', cursor: 'pointer' }}
             />
           </div>
           <div className="field">
@@ -229,8 +230,9 @@ export default function CreateEvent() {
               type="time"
               value={form.endTime}
               onChange={update('endTime')}
+              onClick={(e) => e.target.showPicker?.()}
               autoComplete="off"
-              style={{ colorScheme: 'dark' }}
+              style={{ colorScheme: 'dark', cursor: 'pointer' }}
             />
           </div>
         </div>
