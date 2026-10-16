@@ -336,7 +336,7 @@ export default function MyEvents() {
                           Find connections
                         </div>
                       )}
-                      {!isCancelled && (
+                      {!isCancelled && !isEnded && (
                         <div
                           style={{
                             background: isPrepOpen ? 'var(--accent)' : 'var(--accent-dim)',
