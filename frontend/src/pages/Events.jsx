@@ -11,6 +11,37 @@ function formatDate(iso) {
   })
 }
 
+function getEventStatus(date, durationHours = 3) {
+  const now = new Date()
+  const start = new Date(date)
+  const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000)
+  if (now < start) return 'upcoming'
+  if (now <= end) return 'ongoing'
+  return 'ended'
+}
+
+function StatusBadge({ date, durationHours = 3 }) {
+  const [status, setStatus] = useState(() => getEventStatus(date, durationHours))
+  useEffect(() => {
+    const t = setInterval(() => setStatus(getEventStatus(date, durationHours)), 30000)
+    return () => clearInterval(t)
+  }, [date, durationHours])
+
+  if (status === 'upcoming') return null
+  const styles = {
+    ongoing: { color: '#4ade80', bg: 'rgba(74,222,128,0.1)', border: 'rgba(74,222,128,0.3)', label: 'Ongoing' },
+    ended:   { color: 'var(--text-secondary)', bg: 'var(--surface-2)', border: 'var(--border)', label: 'Event ended' },
+  }
+  const s = styles[status]
+  return (
+    <span style={{
+      fontSize: '0.72rem', fontWeight: 600, color: s.color,
+      background: s.bg, border: `1px solid ${s.border}`,
+      borderRadius: 20, padding: '2px 9px', whiteSpace: 'nowrap',
+    }}>{s.label}</span>
+  )
+}
+
 function AttendeeCount({ eventId, minPoolSize }) {
   const [stats, setStats] = useState(null)
 
@@ -270,29 +301,38 @@ export default function Events() {
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {events.map((event, i) => (
+          {events.map((event, i) => {
+            const status = getEventStatus(event.date, event.duration_hours || 3)
+            const isEnded = status === 'ended'
+            return (
             <div
               key={event.id}
               className="card fade-up"
               style={{
-                cursor: 'pointer',
+                cursor: isEnded ? 'default' : 'pointer',
                 transition: 'border-color 0.2s, box-shadow 0.2s',
                 animationDelay: `${i * 0.08}s`,
                 padding: '20px 24px',
+                opacity: isEnded ? 0.55 : 1,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(108,99,255,0.5)'
-                e.currentTarget.style.boxShadow = '0 0 24px rgba(108,99,255,0.08)'
+                if (!isEnded) {
+                  e.currentTarget.style.borderColor = 'rgba(108,99,255,0.5)'
+                  e.currentTarget.style.boxShadow = '0 0 24px rgba(108,99,255,0.08)'
+                }
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
                 e.currentTarget.style.boxShadow = 'none'
               }}
-              onClick={() => setSelected(event)}
+              onClick={() => !isEnded && setSelected(event)}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <h2 style={{ fontSize: '1.1rem', marginBottom: 6 }}>{event.name}</h2>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                    <h2 style={{ fontSize: '1.1rem' }}>{event.name}</h2>
+                    <StatusBadge date={event.date} durationHours={event.duration_hours || 3} />
+                  </div>
                   <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                       {formatDate(event.date)}
@@ -305,19 +345,22 @@ export default function Events() {
                   </div>
                   <AttendeeCount eventId={event.id} minPoolSize={event.min_pool_size} />
                 </div>
-                <div style={{
-                  background: 'var(--accent-dim)',
-                  color: 'var(--accent)',
-                  border: '1px solid rgba(108,99,255,0.3)',
-                  borderRadius: 6, padding: '6px 14px',
-                  fontSize: '0.8rem', fontWeight: 600,
-                  whiteSpace: 'nowrap', flexShrink: 0,
-                }}>
-                  Attend this event
-                </div>
+                {!isEnded && (
+                  <div style={{
+                    background: status === 'ongoing' ? 'rgba(74,222,128,0.1)' : 'var(--accent-dim)',
+                    color: status === 'ongoing' ? '#4ade80' : 'var(--accent)',
+                    border: `1px solid ${status === 'ongoing' ? 'rgba(74,222,128,0.3)' : 'rgba(108,99,255,0.3)'}`,
+                    borderRadius: 6, padding: '6px 14px',
+                    fontSize: '0.8rem', fontWeight: 600,
+                    whiteSpace: 'nowrap', flexShrink: 0,
+                  }}>
+                    Attend this event
+                  </div>
+                )}
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
 
       </div>

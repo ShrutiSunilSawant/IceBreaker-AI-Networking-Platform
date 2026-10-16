@@ -11,6 +11,36 @@ function formatDate(iso) {
   })
 }
 
+function getEventStatus(date, durationHours = 3) {
+  const now = new Date()
+  const start = new Date(date)
+  const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000)
+  if (now < start) return 'upcoming'
+  if (now <= end) return 'ongoing'
+  return 'ended'
+}
+
+function StatusBadge({ date, durationHours = 3 }) {
+  const [status, setStatus] = useState(() => getEventStatus(date, durationHours))
+  useEffect(() => {
+    const t = setInterval(() => setStatus(getEventStatus(date, durationHours)), 30000)
+    return () => clearInterval(t)
+  }, [date, durationHours])
+
+  const cfg = {
+    upcoming: { color: 'var(--accent)', bg: 'var(--accent-dim)', border: 'rgba(108,99,255,0.3)', label: 'Upcoming' },
+    ongoing:  { color: '#4ade80', bg: 'rgba(74,222,128,0.1)', border: 'rgba(74,222,128,0.3)', label: 'Ongoing' },
+    ended:    { color: 'var(--text-secondary)', bg: 'var(--surface-2)', border: 'var(--border)', label: 'Event ended' },
+  }[status]
+  return (
+    <span style={{
+      fontSize: '0.75rem', fontWeight: 600, color: cfg.color,
+      background: cfg.bg, border: `1px solid ${cfg.border}`,
+      borderRadius: 20, padding: '3px 10px', whiteSpace: 'nowrap',
+    }}>{cfg.label}</span>
+  )
+}
+
 export default function ManageEvent() {
   const navigate = useNavigate()
   const { eventId } = useParams()
@@ -128,7 +158,10 @@ export default function ManageEvent() {
               }}>
                 Organizer dashboard
               </div>
-              <h1 style={{ fontSize: '2rem', marginBottom: 8 }}>{event.name}</h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
+                <h1 style={{ fontSize: '2rem' }}>{event.name}</h1>
+                <StatusBadge date={event.date} durationHours={event.duration_hours || 3} />
+              </div>
               <p style={{ color: 'var(--text-secondary)' }}>{formatDate(event.date)} · {event.location}</p>
             </div>
 
