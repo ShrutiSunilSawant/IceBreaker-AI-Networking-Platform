@@ -203,9 +203,10 @@ export default function CreateEvent() {
             type="date"
             value={form.eventDate}
             onChange={update('eventDate')}
+            onClick={(e) => e.target.showPicker?.()}
             min={new Date().toISOString().split('T')[0]}
             autoComplete="off"
-            style={{ colorScheme: 'dark' }}
+            style={{ colorScheme: 'dark', cursor: 'pointer' }}
           />
         </div>
 
