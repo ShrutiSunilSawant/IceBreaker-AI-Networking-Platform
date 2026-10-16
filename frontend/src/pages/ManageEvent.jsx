@@ -11,21 +11,21 @@ function formatDate(iso) {
   })
 }
 
-function getEventStatus(date, durationHours = 3) {
+function getEventStatus(date, endTime, durationHours = 3) {
   const now = new Date()
   const start = new Date(date)
-  const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000)
+  const end = endTime ? new Date(endTime) : new Date(start.getTime() + durationHours * 60 * 60 * 1000)
   if (now < start) return 'upcoming'
   if (now <= end) return 'ongoing'
   return 'ended'
 }
 
-function StatusBadge({ date, durationHours = 3 }) {
-  const [status, setStatus] = useState(() => getEventStatus(date, durationHours))
+function StatusBadge({ date, endTime, durationHours = 3 }) {
+  const [status, setStatus] = useState(() => getEventStatus(date, endTime, durationHours))
   useEffect(() => {
-    const t = setInterval(() => setStatus(getEventStatus(date, durationHours)), 30000)
+    const t = setInterval(() => setStatus(getEventStatus(date, endTime, durationHours)), 30000)
     return () => clearInterval(t)
-  }, [date, durationHours])
+  }, [date, endTime, durationHours])
 
   const cfg = {
     upcoming: { color: 'var(--accent)', bg: 'var(--accent-dim)', border: 'rgba(108,99,255,0.3)', label: 'Upcoming' },
@@ -160,9 +160,11 @@ export default function ManageEvent() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
                 <h1 style={{ fontSize: '2rem' }}>{event.name}</h1>
-                <StatusBadge date={event.date} durationHours={event.duration_hours || 3} />
+                <StatusBadge date={event.date} endTime={event.end_time} durationHours={event.duration_hours || 3} />
               </div>
-              <p style={{ color: 'var(--text-secondary)' }}>{formatDate(event.date)} · {event.location}</p>
+              <p style={{ color: 'var(--text-secondary)' }}>
+                {formatDate(event.date)}{event.end_time ? ` → ${formatDate(event.end_time)}` : ''}{event.location ? ` · ${event.location}` : ''}
+              </p>
             </div>
 
             {stats && (

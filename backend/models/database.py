@@ -35,6 +35,7 @@ class Event(Base):
     location = Column(String, nullable=True)
     description = Column(String, nullable=True)
     duration_hours = Column(Float, default=3.0)
+    end_time = Column(DateTime, nullable=True)
     organizer_email = Column(String, nullable=True)
     organizer_token = Column(String, nullable=True)
     min_pool_size = Column(Integer, default=10)

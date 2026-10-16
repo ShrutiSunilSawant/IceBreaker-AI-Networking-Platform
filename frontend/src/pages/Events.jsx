@@ -11,21 +11,21 @@ function formatDate(iso) {
   })
 }
 
-function getEventStatus(date, durationHours = 3) {
+function getEventStatus(date, endTime, durationHours = 3) {
   const now = new Date()
   const start = new Date(date)
-  const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000)
+  const end = endTime ? new Date(endTime) : new Date(start.getTime() + durationHours * 60 * 60 * 1000)
   if (now < start) return 'upcoming'
   if (now <= end) return 'ongoing'
   return 'ended'
 }
 
-function StatusBadge({ date, durationHours = 3 }) {
-  const [status, setStatus] = useState(() => getEventStatus(date, durationHours))
+function StatusBadge({ date, endTime, durationHours = 3 }) {
+  const [status, setStatus] = useState(() => getEventStatus(date, endTime, durationHours))
   useEffect(() => {
-    const t = setInterval(() => setStatus(getEventStatus(date, durationHours)), 30000)
+    const t = setInterval(() => setStatus(getEventStatus(date, endTime, durationHours)), 30000)
     return () => clearInterval(t)
-  }, [date, durationHours])
+  }, [date, endTime, durationHours])
 
   if (status === 'upcoming') return null
   const styles = {
@@ -302,7 +302,7 @@ export default function Events() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {events.map((event, i) => {
-            const status = getEventStatus(event.date, event.duration_hours || 3)
+            const status = getEventStatus(event.date, event.end_time, event.duration_hours || 3)
             const isEnded = status === 'ended'
             return (
             <div
@@ -331,7 +331,7 @@ export default function Events() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
                     <h2 style={{ fontSize: '1.1rem' }}>{event.name}</h2>
-                    <StatusBadge date={event.date} durationHours={event.duration_hours || 3} />
+                    <StatusBadge date={event.date} endTime={event.end_time} durationHours={event.duration_hours || 3} />
                   </div>
                   <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>

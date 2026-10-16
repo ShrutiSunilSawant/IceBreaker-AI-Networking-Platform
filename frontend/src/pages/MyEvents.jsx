@@ -12,17 +12,16 @@ function formatDate(iso) {
   })
 }
 
-// Events are considered active for 3 hours after start time
-function getEventStatus(date, durationHours = 3) {
+function getEventStatus(date, endTime, durationHours = 3) {
   const now = new Date()
   const start = new Date(date)
-  const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000)
+  const end = endTime ? new Date(endTime) : new Date(start.getTime() + durationHours * 60 * 60 * 1000)
   if (now < start) return 'upcoming'
   if (now >= start && now <= end) return 'ongoing'
   return 'ended'
 }
 
-function useCountdown(date, durationHours = 3) {
+function useCountdown(date, endTime, durationHours = 3) {
   const [display, setDisplay] = useState('')
   const [status, setStatus] = useState('upcoming')
 
@@ -30,7 +29,7 @@ function useCountdown(date, durationHours = 3) {
     const update = () => {
       const now = new Date()
       const start = new Date(date)
-      const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000)
+      const end = endTime ? new Date(endTime) : new Date(start.getTime() + durationHours * 60 * 60 * 1000)
 
       if (now >= end) {
         setDisplay('Event ended')
@@ -68,8 +67,8 @@ function useCountdown(date, durationHours = 3) {
   return { display, status }
 }
 
-function StatusBadge({ date, durationHours }) {
-  const { display, status } = useCountdown(date, durationHours)
+function StatusBadge({ date, endTime, durationHours }) {
+  const { display, status } = useCountdown(date, endTime, durationHours)
 
   const styles = {
     ongoing: { color: '#4ade80', bg: 'rgba(74,222,128,0.1)', border: 'rgba(74,222,128,0.3)' },
@@ -220,7 +219,7 @@ export default function MyEvents() {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {createdEvents.map((event, i) => {
-                const isEnded = getEventStatus(event.date, event.duration_hours || 3) === 'ended'
+                const isEnded = getEventStatus(event.date, event.end_time, event.duration_hours || 3) === 'ended'
                 const token = localStorage.getItem(`organizer_token_${event.id}`)
                 return (
                   <div key={event.id} className="card fade-up" style={{
@@ -232,7 +231,7 @@ export default function MyEvents() {
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                           <h2 style={{ fontSize: '1.1rem' }}>{event.name}</h2>
-                          <StatusBadge date={event.date} durationHours={event.duration_hours || 3} />
+                          <StatusBadge date={event.date} endTime={event.end_time} durationHours={event.duration_hours || 3} />
                         </div>
                         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                           <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{formatDate(event.date)}</span>
@@ -266,8 +265,7 @@ export default function MyEvents() {
             const isActive = event.id === currentEventId
             const isPrepOpen = prepOpen === event.id
             const isUnregistering = unregistering === event.id
-            const status = getEventStatus(event.id)
-            const isEnded = getEventStatus(event.date, event.duration_hours || 3) === 'ended'
+            const isEnded = getEventStatus(event.date, event.end_time, event.duration_hours || 3) === 'ended'
 
 
             return (
@@ -297,7 +295,7 @@ export default function MyEvents() {
                         }}>
                           {event.name}
                         </h2>
-                        <StatusBadge date={event.date} durationHours={event.duration_hours || 3} />
+                        <StatusBadge date={event.date} endTime={event.end_time} durationHours={event.duration_hours || 3} />
 
                       </div>
                       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>

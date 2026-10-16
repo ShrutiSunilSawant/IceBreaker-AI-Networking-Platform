@@ -23,6 +23,7 @@ router = APIRouter(prefix="/events", tags=["events"])
 class EventCreate(BaseModel):
     name: str
     date: str
+    end_time: Optional[str] = None
     organizer_email: EmailStr
     location: Optional[str] = None
     description: Optional[str] = None
@@ -34,6 +35,7 @@ class EventResponse(BaseModel):
     id: str
     name: str
     date: str
+    end_time: Optional[str]
     location: Optional[str]
     description: Optional[str]
     duration_hours: float
@@ -43,13 +45,21 @@ class EventResponse(BaseModel):
 
 
 def to_response(event) -> EventResponse:
+    # derive duration_hours from end_time when available
+    start = event.date
+    end = event.end_time
+    if end and start:
+        derived_hours = (end - start).total_seconds() / 3600
+    else:
+        derived_hours = event.duration_hours or 3.0
     return EventResponse(
         id=event.id,
         name=event.name,
         date=event.date.isoformat(),
+        end_time=event.end_time.isoformat() if event.end_time else None,
         location=event.location,
         description=event.description,
-        duration_hours=event.duration_hours or 3.0,
+        duration_hours=derived_hours,
         min_pool_size=event.min_pool_size,
         active=event.active,
         organizer_email=event.organizer_email,
@@ -65,8 +75,11 @@ async def list_events(db: Session = Depends(get_db)):
     from datetime import timedelta
     now = datetime.utcnow()
     events = db.query(Event).filter_by(active=True).order_by(Event.date.asc()).all()
-    # Hide events that ended more than 1 hour ago
-    visible = [e for e in events if e.date + timedelta(hours=(e.duration_hours or 3) + 1) > now]
+    def event_cutoff(e):
+        if e.end_time:
+            return e.end_time + timedelta(hours=1)
+        return e.date + timedelta(hours=(e.duration_hours or 3) + 1)
+    visible = [e for e in events if event_cutoff(e) > now]
     return [to_response(e) for e in visible]
 
 
@@ -150,13 +163,18 @@ async def create_event(payload: EventCreate, request: Request, db: Session = Dep
     event_id = payload.name.lower().replace(" ", "_")[:40] + "_" + str(uuid.uuid4())[:8]
     organizer_token = make_organizer_token(payload.organizer_email, event_id)
 
+    start_dt = datetime.fromisoformat(payload.date)
+    end_dt = datetime.fromisoformat(payload.end_time) if payload.end_time else None
+    derived_hours = (end_dt - start_dt).total_seconds() / 3600 if end_dt else (payload.duration_hours or 3.0)
+
     event = Event(
         id=event_id,
         name=payload.name,
-        date=datetime.fromisoformat(payload.date),
+        date=start_dt,
+        end_time=end_dt,
         location=payload.location,
         description=payload.description,
-        duration_hours=payload.duration_hours or 3.0,
+        duration_hours=derived_hours,
         min_pool_size=payload.min_pool_size or 2,
         active=True,
         organizer_email=payload.organizer_email,
