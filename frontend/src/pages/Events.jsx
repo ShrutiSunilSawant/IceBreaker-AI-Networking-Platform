@@ -138,7 +138,7 @@ function EventModal({ event, onClose, onRegister }) {
 
         <h2 style={{ fontSize: '1.5rem', marginBottom: 12 }}>{event.name}</h2>
 
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: event.organizer_name ? 8 : 16 }}>
           <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
             {formatDate(event.date)}
           </span>
@@ -148,6 +148,11 @@ function EventModal({ event, onClose, onRegister }) {
             </span>
           )}
         </div>
+        {event.organizer_name && (
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 16 }}>
+            Organized by <span style={{ color: 'var(--text)' }}>{event.organizer_name}</span>
+          </p>
+        )}
 
         {stats && (
           <div style={{
@@ -343,6 +348,11 @@ export default function Events() {
                       </span>
                     )}
                   </div>
+                  {event.organizer_name && (
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 4 }}>
+                      Organized by <span style={{ color: 'var(--text)' }}>{event.organizer_name}</span>
+                    </p>
+                  )}
                   <AttendeeCount eventId={event.id} minPoolSize={event.min_pool_size} />
                 </div>
                 {!isEnded && (

@@ -24,6 +24,7 @@ class EventCreate(BaseModel):
     name: str
     date: str
     end_time: Optional[str] = None
+    organizer_name: Optional[str] = None
     organizer_email: EmailStr
     location: Optional[str] = None
     description: Optional[str] = None
@@ -41,6 +42,7 @@ class EventResponse(BaseModel):
     duration_hours: float
     min_pool_size: int
     active: bool
+    organizer_name: Optional[str]
     organizer_email: Optional[str]
 
 
@@ -62,6 +64,7 @@ def to_response(event) -> EventResponse:
         duration_hours=derived_hours,
         min_pool_size=event.min_pool_size,
         active=event.active,
+        organizer_name=event.organizer_name,
         organizer_email=event.organizer_email,
     )
 
@@ -177,6 +180,7 @@ async def create_event(payload: EventCreate, request: Request, db: Session = Dep
         duration_hours=derived_hours,
         min_pool_size=payload.min_pool_size or 2,
         active=True,
+        organizer_name=payload.organizer_name,
         organizer_email=payload.organizer_email,
         organizer_token=organizer_token,
     )
