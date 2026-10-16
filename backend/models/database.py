@@ -41,6 +41,7 @@ class Event(Base):
     organizer_token = Column(String, nullable=True)
     min_pool_size = Column(Integer, default=10)
     active = Column(Boolean, default=True)
+    cancelled = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     prep_cache = Column(Text, nullable=True)
 
@@ -52,6 +53,7 @@ class Profile(Base):
     user_id = Column(String, nullable=False)
     event_id = Column(String, ForeignKey("events.id"), nullable=False)
     qdrant_id = Column(String, nullable=False)
+    email = Column(String, nullable=True)
     email_hash = Column(String, nullable=True, index=True)
     active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)

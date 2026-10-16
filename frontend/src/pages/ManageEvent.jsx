@@ -84,7 +84,7 @@ export default function ManageEvent() {
   }
 
   const handleCancel = async () => {
-    const confirmed = window.confirm('Cancel and delete this event? This cannot be undone.')
+    const confirmed = window.confirm('Cancel this event? All registered attendees will be emailed. This cannot be undone.')
     if (!confirmed) return
     setActionLoading('cancel')
     try {
@@ -109,7 +109,7 @@ export default function ManageEvent() {
             <p style={{ color: 'var(--text-secondary)', marginBottom: 24 }}>
               {done === 'ended'
                 ? 'The event has been ended. Attendees can no longer find new matches.'
-                : 'The event has been cancelled and removed.'}
+                : 'The event has been cancelled. All registered attendees have been notified by email.'}
             </p>
             <button
               className="btn btn-primary"
@@ -244,8 +244,8 @@ export default function ManageEvent() {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, paddingTop: 4 }}>
                   <div>
-                    <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: 2, color: 'var(--error)' }}>Delete event</p>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Permanently removes the event and all its data. Cannot be undone.</p>
+                    <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: 2, color: 'var(--error)' }}>Cancel event</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Cancels the event and emails all registered attendees. Cannot be undone.</p>
                   </div>
                   <button
                     className="btn btn-ghost"
@@ -253,7 +253,7 @@ export default function ManageEvent() {
                     disabled={actionLoading !== null}
                     onClick={handleCancel}
                   >
-                    {actionLoading === 'cancel' ? 'Deleting...' : 'Delete event'}
+                    {actionLoading === 'cancel' ? 'Cancelling...' : 'Cancel event'}
                   </button>
                 </div>
               </div>

@@ -219,6 +219,7 @@ export default function MyEvents() {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {createdEvents.map((event, i) => {
+                const isCancelled = event.cancelled
                 const isEnded = getEventStatus(event.date, event.end_time, event.duration_hours || 3) === 'ended'
                 const token = localStorage.getItem(`organizer_token_${event.id}`)
                 return (
@@ -280,7 +281,7 @@ export default function MyEvents() {
                     ? 'rgba(108,99,255,0.5)'
                     : undefined,
                   boxShadow: isActive && !isEnded ? '0 0 24px rgba(108,99,255,0.08)' : undefined,
-                  opacity: isUnregistering ? 0.5 : isEnded ? 0.6 : 1,
+                  opacity: isUnregistering ? 0.5 : (isEnded || isCancelled) ? 0.6 : 1,
                   transition: 'opacity 0.2s, border-color 0.2s',
                 }}
               >
@@ -291,11 +292,19 @@ export default function MyEvents() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                         <h2 style={{
                           fontSize: '1.1rem',
-                          color: isEnded ? 'var(--text-secondary)' : 'var(--text)',
+                          color: (isEnded || isCancelled) ? 'var(--text-secondary)' : 'var(--text)',
                         }}>
                           {event.name}
                         </h2>
-                        <StatusBadge date={event.date} endTime={event.end_time} durationHours={event.duration_hours || 3} />
+                        {isCancelled ? (
+                          <span style={{
+                            fontSize: '0.75rem', fontWeight: 600, color: 'var(--error)',
+                            background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)',
+                            borderRadius: 20, padding: '3px 10px', whiteSpace: 'nowrap',
+                          }}>Cancelled</span>
+                        ) : (
+                          <StatusBadge date={event.date} endTime={event.end_time} durationHours={event.duration_hours || 3} />
+                        )}
 
                       </div>
                       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
@@ -311,7 +320,7 @@ export default function MyEvents() {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, flexWrap: 'wrap' }}>
-                      {!isEnded && (
+                      {!isEnded && !isCancelled && (
                         <div
                           style={{
                             background: isActive ? 'var(--accent)' : 'var(--accent-dim)',
@@ -326,19 +335,21 @@ export default function MyEvents() {
                           Find connections
                         </div>
                       )}
-                      <div
-                        style={{
-                          background: isPrepOpen ? 'var(--accent)' : 'var(--accent-dim)',
-                          color: isPrepOpen ? '#fff' : 'var(--accent)',
-                          border: '1px solid rgba(108,99,255,0.3)',
-                          borderRadius: 6, padding: '6px 14px',
-                          fontSize: '0.8rem', fontWeight: 600,
-                          whiteSpace: 'nowrap', cursor: 'pointer',
-                        }}
-                        onClick={() => setPrepOpen(isPrepOpen ? null : event.id)}
-                      >
-                        ✦ AI Prep
-                      </div>
+                      {!isCancelled && (
+                        <div
+                          style={{
+                            background: isPrepOpen ? 'var(--accent)' : 'var(--accent-dim)',
+                            color: isPrepOpen ? '#fff' : 'var(--accent)',
+                            border: '1px solid rgba(108,99,255,0.3)',
+                            borderRadius: 6, padding: '6px 14px',
+                            fontSize: '0.8rem', fontWeight: 600,
+                            whiteSpace: 'nowrap', cursor: 'pointer',
+                          }}
+                          onClick={() => setPrepOpen(isPrepOpen ? null : event.id)}
+                        >
+                          ✦ AI Prep
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

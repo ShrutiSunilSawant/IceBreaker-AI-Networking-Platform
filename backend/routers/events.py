@@ -42,6 +42,7 @@ class EventResponse(BaseModel):
     duration_hours: float
     min_pool_size: int
     active: bool
+    cancelled: bool
     organizer_name: Optional[str]
     organizer_email: Optional[str]
 
@@ -64,6 +65,7 @@ def to_response(event) -> EventResponse:
         duration_hours=derived_hours,
         min_pool_size=event.min_pool_size,
         active=event.active,
+        cancelled=event.cancelled or False,
         organizer_name=event.organizer_name,
         organizer_email=event.organizer_email,
     )
@@ -211,14 +213,51 @@ async def end_event(event_id: str, organizer_token: str, db: Session = Depends(g
 
 @router.delete("/{event_id}")
 async def cancel_event(event_id: str, organizer_token: str, db: Session = Depends(get_db)):
+    import os, resend as _resend
     event = db.query(Event).filter_by(id=event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found.")
     if event.organizer_token != organizer_token:
         raise HTTPException(status_code=403, detail="Not authorized.")
-    db.delete(event)
+
+    event.active = False
+    event.cancelled = True
     db.commit()
-    return {"message": "Event cancelled and deleted."}
+
+    # Email all registered attendees
+    attendees = db.query(Profile).filter_by(event_id=event_id).all()
+    attendee_emails = [p.email for p in attendees if p.email]
+
+    resend_key = os.getenv("RESEND_API_KEY", "")
+    env = os.getenv("ENV", "development")
+    from_email = os.getenv("FROM_EMAIL", "noreply@icebreaker.app")
+    app_url = os.getenv("APP_URL", "http://localhost:5173")
+
+    if resend_key and env != "development" and attendee_emails:
+        try:
+            _resend.api_key = resend_key
+            for email in attendee_emails:
+                _resend.Emails.send({
+                    "from": from_email,
+                    "to": email,
+                    "subject": f"Event cancelled: {event.name}",
+                    "html": f"""
+                    <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px">
+                      <h2 style="margin-bottom:8px">Event cancelled</h2>
+                      <p style="color:#666;margin-bottom:16px">
+                        <strong>{event.name}</strong> has been cancelled by the organizer.
+                      </p>
+                      <p style="color:#666;margin-bottom:24px">
+                        We're sorry for the inconvenience. Browse other events on IceBreaker.
+                      </p>
+                      <a href="{app_url}/events" style="background:#6c63ff;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Browse events</a>
+                    </div>
+                    """,
+                })
+        except Exception:
+            pass
+
+    return {"message": "Event cancelled.", "notified": len(attendee_emails)}
 
 
 @router.patch("/{event_id}/deactivate")

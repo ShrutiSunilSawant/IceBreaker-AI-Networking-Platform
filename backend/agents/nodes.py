@@ -125,6 +125,7 @@ def embed_and_store_node(state: IcebreakerState) -> IcebreakerState:
             user_id=state["user_id"],
             event_id=state["event_id"],
             qdrant_id=qdrant_id,
+            email=state.get("raw_input", {}).get("email"),
             email_hash=state["email_hash"],
         )
         db.add(db_profile)
