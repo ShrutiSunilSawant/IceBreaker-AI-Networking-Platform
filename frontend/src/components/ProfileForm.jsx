@@ -39,10 +39,10 @@ export default function ProfileForm({ eventId, onSuccess }) {
     try {
       const tokenRes = await getToken(form.email, eventId)
       const token = tokenRes.data.access_token
+
+      const profileRes = await submitProfile({ ...form, event_id: eventId }, token)
       saveToken(token, eventId)
       saveEventId(eventId)
-
-      const profileRes = await submitProfile({ ...form, event_id: eventId })
       saveUserId(profileRes.data.user_id, eventId)
       return profileRes.data.user_id
     } catch (err) {

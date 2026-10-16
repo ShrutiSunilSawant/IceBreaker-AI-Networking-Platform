@@ -26,8 +26,8 @@ api.interceptors.request.use((config) => {
 export const getToken = (email, eventId) =>
   api.post('/auth/token', { email, event_id: eventId })
 
-export const submitProfile = (data) =>
-  api.post('/profiles/', data)
+export const submitProfile = (data, token) =>
+  api.post('/profiles/', data, token ? { headers: { Authorization: `Bearer ${token}` } } : {})
 
 export const findMatch = (userId, eventId) =>
   api.post('/matches/', { user_id: userId, event_id: eventId })
