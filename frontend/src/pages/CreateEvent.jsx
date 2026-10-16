@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createEvent } from '../utils/api'
 import Navbar from '../components/Navbar'
@@ -10,64 +10,40 @@ export default function CreateEvent() {
 
   const [form, setForm] = useState({
     name: '',
-    startDate: '',
-    startTime: '',
-    endDate: '',
-    endTime: '',
+    eventDate: '',
+    eventTime: '',
     location: '',
     description: '',
-    min_pool_size: 2,
     organizer_email: platformEmail,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [created, setCreated] = useState(null)
-  const startDateRef = useRef(null)
-  const startTimeRef = useRef(null)
-  const endDateRef = useRef(null)
-  const endTimeRef = useRef(null)
-
-  // Auto-fill end date when start date changes
-  useEffect(() => {
-    if (form.startDate && !form.endDate) {
-      setForm(prev => ({ ...prev, endDate: form.startDate }))
-    }
-  }, [form.startDate])
+  const dateRef = useRef(null)
+  const timeRef = useRef(null)
 
   const update = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   const handleSubmit = async () => {
     setError(null)
-    const startDate = startDateRef.current?.value || form.startDate
-    const startTime = startTimeRef.current?.value || form.startTime
-    const endDate = endDateRef.current?.value || form.endDate
-    const endTime = endTimeRef.current?.value || form.endTime
+    const eventDate = dateRef.current?.value || form.eventDate
+    const eventTime = timeRef.current?.value || form.eventTime
     const missing = []
     if (!form.name) missing.push('Event name')
-    if (!startDate) missing.push('Start date')
-    if (!startTime) missing.push('Start time')
-    if (!endDate) missing.push('End date')
-    if (!endTime) missing.push('End time')
+    if (!eventDate) missing.push('Date')
+    if (!eventTime) missing.push('Time')
     if (!form.location) missing.push('Location')
     if (!form.description) missing.push('Description')
     if (!form.organizer_email) missing.push('Organizer email')
     if (missing.length) { setError(`Please fill in: ${missing.join(', ')}`); return }
-    const startISO = `${startDate}T${startTime}`
-    const endISO = `${endDate}T${endTime}`
-    if (new Date(endISO) <= new Date(startISO)) {
-      setError('End time must be after start time.')
-      return
-    }
     setLoading(true)
     try {
       const res = await createEvent({
         name: form.name,
-        date: startISO,
-        end_time: endISO,
+        date: `${eventDate}T${eventTime}`,
         location: form.location,
         description: form.description,
-        min_pool_size: parseInt(form.min_pool_size),
         organizer_email: form.organizer_email,
       })
       setCreated(res.data)
@@ -216,77 +192,38 @@ export default function CreateEvent() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
           <div className="field">
-            <label>Start date *</label>
+            <label>Date *</label>
             <input
-              ref={startDateRef}
+              ref={dateRef}
               type="date"
-              value={form.startDate}
-              onChange={update('startDate')}
+              value={form.eventDate}
+              onChange={update('eventDate')}
               min={new Date().toISOString().split('T')[0]}
               autoComplete="off"
               style={{ colorScheme: 'dark' }}
             />
           </div>
           <div className="field">
-            <label>Start time *</label>
+            <label>Time *</label>
             <input
-              ref={startTimeRef}
+              ref={timeRef}
               type="time"
-              value={form.startTime}
-              onChange={update('startTime')}
+              value={form.eventTime}
+              onChange={update('eventTime')}
               autoComplete="off"
               style={{ colorScheme: 'dark' }}
             />
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
-          <div className="field">
-            <label>End date *</label>
-            <input
-              ref={endDateRef}
-              type="date"
-              value={form.endDate}
-              onChange={update('endDate')}
-              min={new Date().toISOString().split('T')[0]}
-              autoComplete="off"
-              style={{ colorScheme: 'dark' }}
-            />
-          </div>
-          <div className="field">
-            <label>End time *</label>
-            <input
-              ref={endTimeRef}
-              type="time"
-              value={form.endTime}
-              onChange={update('endTime')}
-              autoComplete="off"
-              style={{ colorScheme: 'dark' }}
-            />
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
-          <div className="field">
-            <label>Location *</label>
-            <input
-              type="text"
-              placeholder="San Francisco, CA"
-              value={form.location}
-              onChange={update('location')}
-              required
-            />
-          </div>
-          <div className="field">
-            <label>Minimum attendees before matching opens</label>
-            <input
-              type="number"
-              min={2}
-              max={100}
-              value={form.min_pool_size}
-              onChange={update('min_pool_size')}
-            />
-          </div>
+        <div className="field">
+          <label>Location *</label>
+          <input
+            type="text"
+            placeholder="San Francisco, CA"
+            value={form.location}
+            onChange={update('location')}
+          />
         </div>
 
         <div className="field">
